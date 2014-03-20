@@ -8,12 +8,12 @@ int threshold = 1852;
 struct{
 	bool isDown;
 	int maxHeight;
-} liftArmStruct;
-liftArmStruct liftArm;
+} liftStruct;
+liftStruct lift;
 
 void max() //Set Hanging Arm Maximum
 {
-	liftArm.maxHeight = 1790;
+	lift.maxHeight = 1790;
 }
 
 int average(int num1, int num2)
@@ -348,6 +348,20 @@ void lineFollowBack(bool reset = false, int degrees) //Line follow backwards
 		}
 	}
 	stopBase();
+}
+task liftArmToHangPos()
+{
+	if(SensorValue[liftArmEncoder] < lift.maxHeight)
+	{
+		while(SensorValue[liftArmEncoder] < lift.maxHeight)
+		{
+			startLiftArm(127);
+			wait1Msec(1);
+		}
+	}
+	else if(SensorValue[liftArmEncoder] > lift.maxHeight)
+	{
+	}
 }
 int atonEncode(bool red, bool blue, bool hangingZone, bool middleZone, int rotine = 1) //Turn true's and falses into the automous
 {
