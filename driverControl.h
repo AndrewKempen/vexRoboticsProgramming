@@ -26,7 +26,7 @@ void driverControl(bool infiniteLoop = true)
 			motor[backRight] = 0;
 			motor[middleRight] = 0;
 		}
-		if(vexRT[Btn5U] == 1 && abs(SensorValue[liftArmEncoder]) <= liftArm.maxHeight) //liftArm up
+		if(vexRT[Btn5U] == 1 && abs(SensorValue[liftArmEncoder]) <= lift.maxHeight) //liftArm up
 		{
 			startLiftArm(maxSpeed/MOD);
 		}
