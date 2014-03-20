@@ -26,13 +26,28 @@ int rightEncoder(int reset = 1) //Read average of right wheel encoders
 	int distance;
 	if(reset == 0) //Reset the motor encoders
 	{
-		nMotorEncoder[backRight] = 0;
-		nMotorEncoder[middleRight] = 0;
+		if(IMEFAILURE)
+		{
+			SensorValue[middleRightBackup] = 0;
+			SensorValue[middleLeftBackup] = 0;
+		}
+		else
+		{
+			nMotorEncoder[backRight] = 0;
+			nMotorEncoder[middleRight] = 0;
+		}
 		distance = 0;
 	}
 	else
 	{
-		distance = (abs(nMotorEncoder[backRight]) + abs(nMotorEncoder[middleRight])) / 2; //Average
+		if(IMEFAILURE)
+		{
+			distance = SensorValue[middleRightBackup];
+		}
+		else
+		{
+			distance = (abs(nMotorEncoder[backRight]) + abs(nMotorEncoder[middleRight])) / 2; //Average
+		}
 	}
 	return distance;
 }
@@ -41,13 +56,28 @@ int leftEncoder(int reset = 1) //Read average of right wheel encoders
 	int distance;
 	if(reset == 0) //Reset the motor encoders
 	{
-		nMotorEncoder[backLeft] = 0;
-		nMotorEncoder[middleLeft] = 0;
+		if(IMEFAILURE)
+		{
+			SensorValue[middleRightBackup] = 0;
+			SensorValue[middleLeftBackup] = 0;
+		}
+		else
+		{
+			nMotorEncoder[backRight] = 0;
+			nMotorEncoder[middleRight] = 0;
+		}
 		distance = 0;
 	}
 	else
 	{
-		distance = (nMotorEncoder[backLeft] + nMotorEncoder[middleLeft]) / 2; //Average
+		if(IMEFAILURE)
+		{
+			distance = SensorValue[middleLeftBackup];
+		}
+		else
+		{
+			distance = (nMotorEncoder[backLeft] + nMotorEncoder[middleLeft]) / 2; //Average
+		}
 	}
 	return distance;
 }
