@@ -5,10 +5,12 @@
 #include "globalVariables.h"
 #include "lcdFunctions.h"
 #include "functions.h"
+#include "tasks.h"
 #include "atonomousSelector.h"
 #include "atonomous.h"
 #include "driverControl.h"
 #include "programmingSkills.h"
+
 #pragma platform(VEX)
 #pragma competitionControl(Competition)
 #pragma autonomousDuration(20)
@@ -17,6 +19,7 @@
 
 void pre_auton()
 {
+
 	bStopTasksBetweenModes = true;
 	fullClear();
 	max();
@@ -24,6 +27,7 @@ void pre_auton()
 
 task autonomous()
 {
+	StartTask(liftArmLimiter);
 	if(atonNumber == 61)
 	{
 
