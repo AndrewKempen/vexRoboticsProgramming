@@ -19,14 +19,14 @@
 
 void pre_auton()
 {
-	writeDebugStreamLine("ERROR: Lift Arm Higher Than Expected at \"liftArmToHangPos\"");
+	writeDebugStreamLine("INFO: Pre_Auton Started");
 	resetEveryThing();
 	bStopTasksBetweenModes = true;
-
 }
 
 task autonomous()
 {
+	writeDebugStreamLine("INFO: Autonomous Started");
 	StartTask(liftArmLimiter);
 	if(atonNumber == 61)
 	{
@@ -40,5 +40,6 @@ task autonomous()
 
 task usercontrol()
 {
+	writeDebugStreamLine("INFO: Driver_Control Started");
 	driverControl(true);
 }
