@@ -419,3 +419,24 @@ void atonSetLiftArm(int locationInDegrees, int speed = 127) //Set the lift arm t
 	}
 	stopLiftArm();
 }
+void resetEveryThing()
+{
+	atonSetLiftArmDown();
+	liftArmEncoderReset();
+	baseEncoderReset();
+	clearLCD();
+}
+void batteryCheck()
+{
+	if(nImmediateBatteryLevel/1000.0 < MAINBATTERYTHRESHOLD)
+	{
+		for(int i;i<4;i++)
+		{
+			clearLCDLine(0);
+			displayLCDCenteredString(0, "Main Battery Low");
+			wait1Msec(250);
+			clearLCDLine(0);
+			wait1Msec(500);
+		}
+	}
+}

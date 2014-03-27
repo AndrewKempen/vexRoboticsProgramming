@@ -1,6 +1,6 @@
 const int maxSpeed = 127;
 const int minSpeed = -127;
-
+const float MAINBATTERYTHRESHOLD = 7.2;
 bool IMEFAILURE = false;
 int atonNumber;
 string line1;

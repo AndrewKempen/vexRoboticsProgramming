@@ -19,10 +19,10 @@
 
 void pre_auton()
 {
-
+	writeDebugStreamLine("ERROR: Lift Arm Higher Than Expected at \"liftArmToHangPos\"");
+	resetEveryThing();
 	bStopTasksBetweenModes = true;
-	fullClear();
-	max();
+
 }
 
 task autonomous()

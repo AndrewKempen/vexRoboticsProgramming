@@ -45,5 +45,6 @@ task liftArmToHangPos()
 	}
 	else if(SensorValue[liftArmEncoder] > lift.maxHeight)
 	{
+		writeDebugStreamLine("ERROR: Lift Arm Higher Than Expected at \"liftArmToHangPos\"")
 	}
 }
