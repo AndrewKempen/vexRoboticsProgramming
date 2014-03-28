@@ -7,10 +7,17 @@ void WARNINGREMOVER()
 	if(leftButton == rightButton){}
 }
 
-void clearLCD() //Clear LCD
+void clearLCD(int line = 2) //Clear LCD
 {
-	clearLCDLine(0);
-	clearLCDLine(1);
+	if(line != 1 && line != 0)
+	{
+		clearLCDLine(0);
+		clearLCDLine(1);
+	}
+	else
+	{
+		clearLCDLine(line);
+	}
 }
 
 void waitPress(int btnPressed = 5)
@@ -54,4 +61,34 @@ bool confirm()
 		wait1Msec(1);
 	}
 	return confirm;
+}
+
+void lcdPrint(int line = 1)
+{
+	if(line != 0 && line != 1)
+	{
+		writeDebugStreamLine("ERROR: LCD Print Recived Parameter Besides 0 or 1");
+	}
+	if(line == 0)
+	{
+		if(strncmp(line0 , parameter, 16) != 0)
+		{
+			displayLCDCenteredString(0, parameter);
+			writeDebugStreamLine("INFO: Printing \"");
+			writeDebugStream(parameter);
+			writeDebugStream("\" to LCD Line 0");
+			sprintf(line0, parameter);
+		}
+	}
+	else if(line == 1)
+	{
+		if(strncmp(line1 , parameter, 16) != 0)
+		{
+			displayLCDCenteredString(1, parameter);
+			writeDebugStreamLine("INFO: Printing \"");
+			writeDebugStream(parameter);
+			writeDebugStream("\" to LCD Line 1");
+			sprintf(line1, parameter);
+		}
+	}
 }
