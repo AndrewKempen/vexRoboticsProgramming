@@ -439,4 +439,31 @@ void batteryCheck()
 			wait1Msec(500);
 		}
 	}
+	powerExpanderLevel = (int)((float)SensorValue[powerExpander] * 5.46);
+	if(powerExpanderLevel > 9000)
+	{
+		powerExpanderLevel = (int)((float)SensorValue[powerExpander] * 3.57);
+	}
+	if(powerExpanderLevel < SECONDBATTERYTHRESHOLD)
+	{
+		for(int i;i<4;i++)
+		{
+			clearLCDLine(0);
+			displayLCDCenteredString(0, "2nd Battery Low");
+			wait1Msec(250);
+			clearLCDLine(0);
+			wait1Msec(500);
+		}
+	}
+	if(BackupBatteryLevel/1000.0 < BACKUPBATTERYTHRESHOLD)
+	{
+		for(int i;i<4;i++)
+		{
+			clearLCDLine(0);
+			displayLCDCenteredString(0, "Back Battery Low");
+			wait1Msec(250);
+			clearLCDLine(0);
+			wait1Msec(500);
+		}
+	}
 }

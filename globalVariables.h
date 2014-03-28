@@ -1,8 +1,12 @@
 const int maxSpeed = 127;
 const int minSpeed = -127;
 const float MAINBATTERYTHRESHOLD = 7.2;
+const float SECONDBATTERYTHRESHOLD = 7.2;
+const float BACKUPBATTERYTHRESHOLD = 9;
+int powerExpanderLevel;
 bool IMEFAILURE = false;
 int atonNumber;
+string parameter;
 string line1;
 string line0;
 int MOD = 1;
