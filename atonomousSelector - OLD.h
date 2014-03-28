@@ -40,13 +40,7 @@ int atonomousSelector()
 				ClearTimer(T2);
 			}
 			lastSelection = 1;
-			//
-			if(strncmp(line1 , "<     Lock     >", 16) != 0)
-			{
-				displayLCDCenteredString(1, "<     Lock     >");
-				sprintf(line1, "<     Lock     >");
-			}
-			//
+
 			if(nLCDButtons == rightButton)
 			{
 				waitRelease();
