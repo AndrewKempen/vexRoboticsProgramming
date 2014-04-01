@@ -15,7 +15,7 @@
 | 4      | Blue Middle Zone  |              |                    |
 +--------+-------------------+--------------+--------------------+
 */
-int atonomousSelector()
+int autonomousSelector()
 {
 	bool timeout = true;
 	bool red, blue, hangingZone, middleZone;
