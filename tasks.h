@@ -1,10 +1,12 @@
+#pragma systemFile
+
 task liftArmLimiter()
 {
 	while(true)
 	{
 		if(SensorBoolean[liftArmDown])
 		{
-			writeDebugStreamLine("INFO: Lift Arm Stopped At Low at \"liftArmLimiter\"");
+			writeDebugStreamLine("INFO: Lift Arm Stopped at Low at \"liftArmLimiter\"");
 			if(motor[liftTopRight] < 0)
 			{
 				stopLiftArm();
@@ -15,7 +17,7 @@ task liftArmLimiter()
 		}
 		else if(SensorValue[liftArmEncoder] > lift.maxHeight)
 		{
-			writeDebugStreamLine("INFO: Lift Arm Stopped At High at \"liftArmLimiter\"");
+			writeDebugStreamLine("INFO: Lift Arm Stopped at High at \"liftArmLimiter\"");
 			if(motor[liftTopRight] > 0)
 			{
 				stopLiftArm();
@@ -35,6 +37,7 @@ task liftArmLimiter()
 		wait1Msec(10);
 	}
 }
+
 task liftArmToHangPos()
 {
 	if(SensorValue[liftArmEncoder] < lift.maxHeight)
@@ -49,4 +52,18 @@ task liftArmToHangPos()
 	{
 		writeDebugStreamLine("ERROR: Lift Arm Higher Than Expected at \"liftArmToHangPos\"");
 	}
+}
+
+task liftArmToDown()
+{
+	writeDebugStreamLine("INFO: \"liftArmToDown\" Task Started");
+	liftBtnUpLastState = 1;
+	liftBtnDownLastState = 1;
+	while(!liftArmButtonEvent() && !SensorBoolean[liftArmDown])
+	{
+		startLiftArm(-127);
+		wait10Msec(10);
+	}
+	stopLiftArm();
+	writeDebugStreamLine("INFO: \"liftArmToDown\" Task Done");
 }
