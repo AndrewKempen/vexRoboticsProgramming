@@ -21,26 +21,20 @@ int liftBtnDownLastState;
 bool armIsDown = true;
 int threshold = 1852;
 
-typedef enum
-{
-	none = 00,
-	redHanging = 10,
-	redMiddle = 20,
-	blueHanging = 30,
-	blueMiddle = 40,
-}autonZoneCode;
-
-typedef enum
-{
-	none = 0,
-	hang = 1,
-	stash = 2,
-	moveBigBalls = 3,
-}autonCode;
+const int	noZone = 00;
+const int	redHangingZone = 10;
+const int	redMiddleZone = 20;
+const int	blueHangingZone = 30;
+const int	blueMiddleZone = 40;
+const int	noAuton = 0;
+const int	hangAuton = 1;
+const	int stashAuton = 2;
+const int	moveBigBallsAuton = 3;
 
 struct{
 	bool isDown;
 	int maxHeight;
+	int stashHeight;
 	bool isDown;
 	bool isMax;
 } liftStruct;
