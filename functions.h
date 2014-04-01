@@ -1,3 +1,5 @@
+#pragma systemFile
+
 int average(int num1, int num2)
 {
 	return ((num1 + num2)/2);
@@ -465,5 +467,32 @@ void batteryCheck()
 			clearLCDLine(0);
 			wait1Msec(500);
 		}
+	}
+}
+bool liftArmButtonEvent()
+{
+	if(liftBtnUpLastState == 1 && vexRT[Btn6U] == 1)
+	{
+		return false;
+	}
+	else if(liftBtnDownLastState == 1 && vexRT[Btn6D] == 1)
+	{
+		return false;
+	}
+	else if(liftBtnUpLastState == 0 && vexRT[Btn6U] == 1)
+	{
+		writeDebugStreamLine("INFO: Button Event at \"liftArmButtonEvent\"");
+		return true;
+	}
+	else if(liftBtnDownLastState == 0 && vexRT[Btn6D] == 1)
+	{
+		writeDebugStreamLine("INFO: Button Event at \"liftArmButtonEvent\"");
+		return true;
+	}
+	else
+	{
+		liftBtnUpLastState = vexRT[Btn6U];
+		liftBtnDownLastState = vexRT[Btn6D];
+		return false;
 	}
 }
