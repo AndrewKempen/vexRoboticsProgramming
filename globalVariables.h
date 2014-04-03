@@ -29,18 +29,26 @@ const int	blueMiddleZone = 40;
 const int	noAuton = 0;
 const int	hangAuton = 1;
 const	int stashAuton = 2;
-const int	moveBigBallsAuton = 3;
+const int	moveBigBallAuton = 3;
 
 struct{
 	bool isDown;
 	int maxHeight;
 	int stashHeight;
+	int tipHeight;
 	bool isDown;
 	bool isMax;
+	bool PIDon;
+	bool auton;
+	int requestedLocation;
+	int error;
+	int lastError;
+	float kp;
+	float kd;
 } liftStruct;
 liftStruct lift;
 
-void max() //Set Hanging Arm Maximum
+void liftValues() //Set Hanging Arm Maximum
 {
 	lift.maxHeight = 1790;
 }
