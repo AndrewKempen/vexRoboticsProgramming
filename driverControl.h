@@ -6,31 +6,39 @@ void driverControl(bool infiniteLoop = true)
 	bool intakeBtnReleased = false;
 	do
 	{
+		if(liftEncoder() > lift.tipHeight && vexRT[Btn8L] != 1)
+		{
+			MOD = 2;
+		}
+		else
+		{
+			MOD = 1;
+		}
 		if(abs(vexRT[Ch3]) > THRESHOLDD) //Make it so that motors don't whine
 		{
 			motor[backLeft]  = (vexRT[Ch3]/MOD);
-			motor[middleLeft] = (vexRT[Ch3]/MOD);
+			motor[frontLeft] = (vexRT[Ch3]/MOD);
 		}
 		else //Stop motors from whineing
 		{
 			motor[backLeft]  = 0;
-			motor[middleLeft] = 0;
+			motor[frontLeft] = 0;
 		}
 		if(abs(vexRT[Ch2]) > THRESHOLDD) //Make it so that motors don't whine
 		{
 			motor[backRight] = (vexRT[Ch2])/MOD;
-			motor[middleRight] = (vexRT[Ch2])/MOD;
+			motor[frontRight] = (vexRT[Ch2])/MOD;
 		}
 		else //Stop motors from whineing
 		{
 			motor[backRight] = 0;
-			motor[middleRight] = 0;
+			motor[frontRight] = 0;
 		}
-		if(vexRT[Btn5U] == 1 && abs(SensorValue[liftArmEncoder]) <= lift.maxHeight) //liftArm up
+		if(vexRT[Btn5U] == 1)//&& liftEncoder() <= lift.maxHeight) //liftArm up
 		{
 			startLiftArm(maxSpeed/MOD);
 		}
-		else if(vexRT[Btn5D] == 1  && SensorValue[liftArmDown] != 1) //liftArm down
+		else if(vexRT[Btn5D] == 1)//  && SensorValue[liftArmDown] != 1) //liftArm down
 		{
 			startLiftArm(minSpeed/MOD);
 		}
@@ -38,17 +46,9 @@ void driverControl(bool infiniteLoop = true)
 		{
 			stopLiftArm(); //Stop lift arm
 		}
-		if(SensorValue[liftArmDown] == 1) //If the lift arm is down, reset the encoder
+		if(SensorValue[liftDown] == 1) //If the lift arm is down, reset the encoder
 		{
-			SensorValue[liftArmEncoder] = 0;
-		}
-		if(vexRT[Btn8U] == 1 && armIsDown) //ballArm up
-		{
-			ballArmToggle();
-		}
-		else if(vexRT[Btn8D] == 1 && !armIsDown) //ballArm down
-		{
-			ballArmToggle();
+			liftEncoder(0);
 		}
 		if(vexRT[Btn7L] == 1) //Manual overide for intake funtions
 		{
@@ -112,6 +112,5 @@ void driverControl(bool infiniteLoop = true)
 		}
 
 	}
-	while(infiniteLoop); //Infinate loop or not - This makes it possible for there to be a loop outside this funtion that controls it
-		                   // i.e. A small program that displays the distance that the encoders are reading
-}
+	while(infiniteLoop); //Infinite loop or not - This makes it possible for there to be a loop outside this funtion that controls it
+}	                 	 	 //i.e. A small program that displays the distance that the encoders are reading
