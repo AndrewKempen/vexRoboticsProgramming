@@ -24,15 +24,15 @@ int autonomousSelector()
 	int screenRM = 1; //2
 	int screenBH = 1; //3
 	int screenBM = 1; //4
-	int atonCode = 0;
+	int autonCode = 0;
 	string display;
 	ClearTimer(T1);
 	ClearTimer(T2);
-	while(bIfiRobotDisabled && atonCode == 0) //15 Second Timeout
+	while(bIfiRobotDisabled && autonCode == 0) //15 Second Timeout
 	{
 		bLCDBacklight = true;									// Turn on LCD Backlight
 		string mainBattery, backupBattery;
-		if(SensorValue[atonSelector]<=573 && SensorValue[atonSelector]>=0 && atonCode == 0) //Red Hanging Zone
+		if(SensorValue[autonSelector]<=573 && SensorValue[autonSelector]>=0 && autonCode == 0) //Red Hanging Zone
 		{
 			if(lastSelection != 1)
 			{
@@ -61,23 +61,13 @@ int autonomousSelector()
 			}
 			if(screenRH == 1)
 			{
-				//
-				if(strncmp(line0 , "<     Hang      ", 16) != 0)
-				{
-					displayLCDCenteredString(0, "<     Hang      ");
-					sprintf(line0, "<     Hang      ");
-				}
-				//
+				parameter = "<     Hang      ";
+				lcdPrint(0);
 			}
 			else if(screenRH == 2)
 			{
-				//
-				if(strncmp(line0 , "< Move Big Ball ", 16) != 0)
-				{
-					displayLCDCenteredString(0, "< Move Big Ball ");
-					sprintf(line0, "< Move Big Ball ");
-				}
-				//
+				parameter = "< Move Big Ball ";
+				lcdPrint(0);
 			}
 			if(nLCDButtons == centerButton)
 			{
@@ -88,11 +78,11 @@ int autonomousSelector()
 					blue = false;
 					hangingZone = true;
 					middleZone = false;
-					atonCode = atonEncode(red, blue, hangingZone, middleZone, screenRH);
+					autonCode = autonEncode(red, blue, hangingZone, middleZone, screenRH);
 				}
 			}
 		}
-		else if(SensorValue[atonSelector]>573 && SensorValue[atonSelector]<=1228 && atonCode == 0) //Red Middle Zone
+		else if(SensorValue[autonSelector]>573 && SensorValue[autonSelector]<=1228 && autonCode == 0) //Red Middle Zone
 		{
 			if(lastSelection != 2)
 			{
@@ -100,22 +90,12 @@ int autonomousSelector()
 				ClearTimer(T2);
 			}
 			lastSelection = 2;
-			//
-			if(strncmp(line1 , "      Lock      ", 16) != 0)
-			{
-				displayLCDCenteredString(1, "      Lock      ");
-				sprintf(line1, "      Lock      ");
-			}
-			//
+			parameter = "      Lock      ";
+			lcdPrint(1);
 			if(screenRM == 1)
 			{
-				//
-				if(strncmp(line0 , "< Push Big Ball ", 16) != 0)
-				{
-					displayLCDCenteredString(0, "< Push Big Ball ");
-					sprintf(line0, "< Push Big Ball ");
-				}
-				//
+				parameter = "< Push Big Ball ";
+				lcdPrint(0);
 			}
 			if(nLCDButtons == centerButton)
 			{
@@ -126,11 +106,11 @@ int autonomousSelector()
 					blue = false;
 					hangingZone = false;
 					middleZone = true;
-					atonCode = atonEncode(red, blue, hangingZone, middleZone, screenRM);
+					autonCode = autonEncode(red, blue, hangingZone, middleZone, screenRM);
 				}
 			}
 		}
-		else if(SensorValue[atonSelector]>1228 && SensorValue[atonSelector]<=2294) //Battery Levels
+		else if(SensorValue[autonSelector]>1228 && SensorValue[autonSelector]<=2294) //Battery Levels
 		{
 			if(lastSelection != 5)
 			{
@@ -150,7 +130,7 @@ int autonomousSelector()
 				waitRelease();
 				if(confirm())
 				{
-					atonCode = 61;
+					autonCode = 61;
 				}
 			}
 			else if(nLCDButtons == rightButton)
@@ -171,7 +151,7 @@ int autonomousSelector()
         wait1Msec(4000);
 			}
 		}
-		else if(SensorValue[atonSelector]<=3522 && SensorValue[atonSelector]>2294 && atonCode == 0) //Blue Middle
+		else if(SensorValue[autonSelector]<=3522 && SensorValue[autonSelector]>2294 && autonCode == 0) //Blue Middle
 		{
 			if(lastSelection != 3)
 			{
@@ -179,22 +159,12 @@ int autonomousSelector()
 				ClearTimer(T2);
 			}
 			lastSelection = 3;
-			//
-			if(strncmp(line1 , "      Lock      ", 16) != 0)
-			{
-				displayLCDCenteredString(1, "      Lock      ");
-				sprintf(line1, "      Lock      ");
-			}
-			//
+			parameter = "      Lock      ";
+			lcdPrint(1);
 			if(screenBM == 1)
 			{
-				//
-				if(strncmp(line0 , " Push Big Ball >", 16) != 0)
-				{
-					displayLCDCenteredString(0, " Push Big Ball >");
-					sprintf(line0, " Push Big Ball >");
-				}
-				//
+				parameter = " Push Big Ball >";
+				lcdPrint(0);
 			}
 			if(nLCDButtons == centerButton)
 			{
@@ -205,11 +175,11 @@ int autonomousSelector()
 					blue = true;
 					hangingZone = false;
 					middleZone = true;
-					atonCode = atonEncode(red, blue, hangingZone, middleZone, screenBM);
+					autonCode = autonEncode(red, blue, hangingZone, middleZone, screenBM);
 				}
 			}
 		}
-		else if(SensorValue[atonSelector]>3522 && SensorValue[atonSelector]<=4095 && atonCode == 0) //Blue Hang
+		else if(SensorValue[autonSelector]>3522 && SensorValue[autonSelector]<=4095 && autonCode == 0) //Blue Hang
 		{
 			if(lastSelection != 4)
 			{
@@ -217,13 +187,8 @@ int autonomousSelector()
 				ClearTimer(T2);
 			}
 			lastSelection = 4;
-			//
-			if(strncmp(line1 , "<     Lock     >", 16) != 0)
-			{
-				displayLCDCenteredString(1, "<     Lock     >");
-				sprintf(line1, "<     Lock     >");
-			}
-			//
+			parameter = "<     Lock     >";
+			lcdPrint(1);
 			if(nLCDButtons == rightButton)
 			{
 				waitRelease();
@@ -244,23 +209,13 @@ int autonomousSelector()
 			}
 			if(screenBH == 1)
 			{
-				//
-				if(strncmp(line0 , "      Hang     >", 16) != 0)
-				{
-					displayLCDCenteredString(0, "      Hang     >");
-					sprintf(line0, "      Hang     >");
-				}
-				//
+				parameter = "      Hang     >";
+				lcdPrint(0);
 			}
 			else if(screenBH == 2)
 			{
-				//
-				if(strncmp(line0 , " Move Big Ball >", 16) != 0)
-				{
-					displayLCDCenteredString(0, " Move Big Ball >");
-					sprintf(line0, " Move Big Ball >");
-				}
-				//
+				parameter = " Move Big Ball >";
+				lcdPrint(0);
 			}
 			if(nLCDButtons == centerButton)
 			{
@@ -271,7 +226,7 @@ int autonomousSelector()
 					blue = true;
 					hangingZone = true;
 					middleZone = false;
-					atonCode = atonEncode(red, blue, hangingZone, middleZone, screenBH);
+					autonCode = autonEncode(red, blue, hangingZone, middleZone, screenBH);
 				}
 			}
 		}
@@ -280,7 +235,7 @@ int autonomousSelector()
 			ClearTimer(T1);
 		}
 	}
-	if(timeout && atonCode == 0)
+	if(timeout && autonCode == 0)
 	{
 		for(int i=0;i<4;i++)
 		{
@@ -289,8 +244,8 @@ int autonomousSelector()
 			clearLCDLine(0);
 			wait10Msec(50);
 		}
-		atonCode = 0;
+		autonCode = 0;
 	}
 	bLCDBacklight = false;
-	return atonCode;
+	return autonCode;
 }
