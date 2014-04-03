@@ -9,6 +9,7 @@
 #pragma config(Sensor, dgtl4,  intakeFull,     sensorTouch)
 #pragma config(Sensor, dgtl5,  middleRightBackup, sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  middleLeftBackup, sensorQuadEncoder)
+#pragma config(Sensor, dgtl9,  autonSelectFailure, sensorTouch)
 #pragma config(Sensor, dgtl10, redAlliance,    sensorTouch)
 #pragma config(Sensor, dgtl11, hangingZone,    sensorTouch)
 #pragma config(Sensor, dgtl12, IMEFailure,     sensorTouch)
