@@ -8,7 +8,7 @@ void driverControl(bool infiniteLoop = true)
 	{
 		if(liftEncoder() > lift.tipHeight && vexRT[Btn8L] != 1)
 		{
-			MOD = 2;
+			MOD = 3;
 		}
 		else
 		{
@@ -34,13 +34,13 @@ void driverControl(bool infiniteLoop = true)
 			motor[backRight] = 0;
 			motor[frontRight] = 0;
 		}
-		if(vexRT[Btn5U] == 1)//&& liftEncoder() <= lift.maxHeight) //liftArm up
+		if(vexRT[Btn5U] == 1 && !lift.isMax) //liftArm up
 		{
-			startLiftArm(maxSpeed/MOD);
+			startLiftArm(maxSpeed);
 		}
-		else if(vexRT[Btn5D] == 1)//  && SensorValue[liftArmDown] != 1) //liftArm down
+		else if(vexRT[Btn5D] == 1 && !lift.isDown) //liftArm down
 		{
-			startLiftArm(minSpeed/MOD);
+			startLiftArm(minSpeed);
 		}
 		else
 		{
@@ -83,7 +83,7 @@ void driverControl(bool infiniteLoop = true)
 				stopIntake();
 				ClearTimer(T3);
 			}
-			if(SensorValue[intakeFull] == 1 && intakeBtnReleased) //Intake is full and the button has been released
+			if(false && intakeBtnReleased) //Intake is full and the button has been released
 			{
 				intakeOn = false;
 				intakeBtnReleased = false;
