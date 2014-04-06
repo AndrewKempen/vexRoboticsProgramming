@@ -6,7 +6,6 @@ const float MAINBATTERYTHRESHOLD = 7.2;
 const float SECONDBATTERYTHRESHOLD = 7.2;
 const float BACKUPBATTERYTHRESHOLD = 9;
 int powerExpanderLevel;
-bool IMEFAILURE = false;
 int autonNumber;
 string parameter;
 string line1;
@@ -30,16 +29,18 @@ const int	noAuton = 0;
 const int	hangAuton = 1;
 const	int stashAuton = 2;
 const int	moveBigBallAuton = 3;
+const int getBigBallAuton = 4;
 
 struct{
 	bool isDown;
 	int maxHeight;
 	int stashHeight;
 	int tipHeight;
+	int location;
 	bool isDown;
 	bool isMax;
-	bool PIDon;
-	bool auton;
+	bool isPIDon;
+	bool isauton;
 	int requestedLocation;
 	int error;
 	int lastError;
@@ -48,7 +49,13 @@ struct{
 } liftStruct;
 liftStruct lift;
 
+void liftPIDValues()
+{
+	lift.kp = 0.1;
+	lift.kd = 0.1;
+}
 void liftValues() //Set Hanging Arm Maximum
 {
 	lift.maxHeight = 1790;
+	lift.tipHeight = ((lift.maxHeight/3)*2);
 }
