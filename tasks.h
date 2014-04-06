@@ -4,6 +4,7 @@ task liftArmLimiter()
 {
 	while(true)
 	{
+		lift.location = liftEncoder();
 		if(SensorBoolean[liftDown])
 		{
 			writeDebugStreamLine("INFO: Lift Arm Stopped at Low at \"liftArmLimiter\"");
@@ -15,7 +16,7 @@ task liftArmLimiter()
 			liftArmEncoderReset();
 			lift.isDown = true;
 		}
-		else if(liftEncoder() > lift.maxHeight)
+		else if(lift.location > lift.maxHeight)
 		{
 			writeDebugStreamLine("INFO: Lift Arm Stopped at High at \"liftArmLimiter\"");
 			if(motor[liftTopRight] > 0)
@@ -74,17 +75,17 @@ task liftArmPID()
 	int lastRequestedLocation;
 	while(true)
 	{
-		if(lift.auton && lift.PIDon)
+		if(lift.isauton && lift.isPIDon)
 		{
 				lift.error = lift.requestedLocation - liftEncoder();
 				startLiftArm(clamp((lift.error*lift.kp) + ((lift.error - lift.lastError)*lift.kd)));
 				lift.lastError = lift.error;
 				wait10Msec(10);
 		}
-		else if(!lift.auton && lift.PIDon)
+		else if(!lift.isauton && lift.isPIDon)
 		{
 			lift.requestedLocation = liftEncoder();
-			while(lift.PIDon)
+			while(lift.isPIDon)
 			{
 				lift.error = lift.requestedLocation - liftEncoder();
 				startLiftArm(clamp((lift.error*lift.kp) + ((lift.error - lift.lastError)*lift.kd)));
