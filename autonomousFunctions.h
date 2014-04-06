@@ -16,7 +16,7 @@ int rightEncoder(int reset = 1) //Read average of right wheel encoders
 	int distance;
 	if(reset == 0) //Reset the motor encoders
 	{
-		if(SensorBoolean[IMEFailure])
+		if(SensorBoolean[isIMEFailure])
 		{
 			SensorValue[middleRightBackup] = 0;
 		}
@@ -29,7 +29,7 @@ int rightEncoder(int reset = 1) //Read average of right wheel encoders
 	}
 	else
 	{
-		if(SensorBoolean[IMEFailure])
+		if(SensorBoolean[isIMEFailure])
 		{
 			distance = SensorValue[middleRightBackup];
 		}
@@ -41,12 +41,12 @@ int rightEncoder(int reset = 1) //Read average of right wheel encoders
 	return distance;
 }
 
-int leftEncoder(int reset = 1) //Read average of right wheel encoders
+int leftEncoder(int reset = 1) //Read average of left wheel encoders
 {
 	int distance;
 	if(reset == 0) //Reset the motor encoders
 	{
-		if(SensorBoolean[IMEFailure])
+		if(SensorBoolean[isIMEFailure])
 		{
 			SensorValue[middleLeftBackup] = 0;
 		}
@@ -59,7 +59,7 @@ int leftEncoder(int reset = 1) //Read average of right wheel encoders
 	}
 	else
 	{
-		if(SensorBoolean[IMEFailure])
+		if(SensorBoolean[isIMEFailure])
 		{
 			distance = SensorValue[middleLeftBackup];
 		}
@@ -103,7 +103,7 @@ void fullClear() //Clear EVERYTHING
 	baseEncoderReset();
 	liftArmEncoderReset();
 }
-int autonEncode(bool red, bool blue, bool hangingZone, bool middleZone, int rotine = 1) //Turn true's and falses into the automous
+int autonEncode(bool red, bool blue, bool hangingZone, bool middleZone, int routine = 1) //Turn true's and falses into the autonomous code
 {
 	int returnAton;
 	if((red && blue) || (!red && !blue) || (hangingZone && middleZone) || (!hangingZone && !middleZone))
@@ -115,21 +115,21 @@ int autonEncode(bool red, bool blue, bool hangingZone, bool middleZone, int roti
 	{
 		if(red && hangingZone)
 		{
-			returnAton = 10;
+			returnAton = redHangingZone;
 		}
 		else if(red && middleZone)
 		{
-			returnAton = 20;
+			returnAton = redMiddleZone;
 		}
 		else if(blue && hangingZone)
 		{
-			returnAton = 30;
+			returnAton = blueHangingZone;
 		}
 		else if(blue && middleZone)
 		{
-			returnAton = 40;
+			returnAton = blueMiddleZone;
 		}
-		returnAton = returnAton + rotine;
+		returnAton = returnAton + routine;
 	}
 	return returnAton;
 }
@@ -163,6 +163,8 @@ void batteryCheck()
 {
 	if(nImmediateBatteryLevel/1000.0 < MAINBATTERYTHRESHOLD)
 	{
+		parameter = "Main Battery Low";
+		lcdPrint(0);
 		for(int i;i<4;i++)
 		{
 			clearLCDLine(0);
@@ -179,6 +181,8 @@ void batteryCheck()
 	}
 	if(powerExpanderLevel < SECONDBATTERYTHRESHOLD)
 	{
+		parameter = "2nd Battery Low";
+		lcdPrint(0);
 		for(int i;i<4;i++)
 		{
 			clearLCDLine(0);
@@ -190,7 +194,9 @@ void batteryCheck()
 	}
 	if(BackupBatteryLevel/1000.0 < BACKUPBATTERYTHRESHOLD)
 	{
-		for(int i;i<4;i++)
+		parameter = "Back Battery Low";
+		lcdPrint(0);
+		for(int i;i<2;i++)
 		{
 			clearLCDLine(0);
 			displayLCDCenteredString(0, "Back Battery Low");
