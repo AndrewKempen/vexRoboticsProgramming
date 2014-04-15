@@ -1,13 +1,12 @@
 #pragma systemFile
-
 task liftArmLimiter()
 {
 	while(true)
 	{
+		lift.lastLocation = lift.location;
 		lift.location = liftEncoder();
 		if(SensorBoolean[liftDown])
 		{
-			writeDebugStreamLine("INFO: Lift Arm Stopped at Low at \"liftArmLimiter\"");
 			if(motor[liftTopRight] < 0)
 			{
 				stopLiftArm();
@@ -18,7 +17,6 @@ task liftArmLimiter()
 		}
 		else if(lift.location > lift.maxHeight)
 		{
-			writeDebugStreamLine("INFO: Lift Arm Stopped at High at \"liftArmLimiter\"");
 			if(motor[liftTopRight] > 0)
 			{
 				stopLiftArm();
@@ -35,23 +33,12 @@ task liftArmLimiter()
 		{
 			lift.isDown = false;
 		}
-		wait1Msec(10);
-	}
-}
-
-task liftArmToHangPos()
-{
-	if(liftEncoder() < lift.maxHeight)
-	{
-		while(liftEncoder() < lift.maxHeight)
+		if(motor[liftTopRight] == 127 && lift.location - lift.lastLocation < 5)
 		{
-			startLiftArm(127);
-			wait10Msec(10);
+			writeDebugStreamLine("ERROR: Lift Arm Jammed!");
+			lift.isJammed = true;
 		}
-	}
-	else if(liftEncoder() > lift.maxHeight)
-	{
-		writeDebugStreamLine("ERROR: Lift Arm Higher Than Expected at \"liftArmToHangPos\"");
+		wait1Msec(10);
 	}
 }
 
@@ -69,30 +56,52 @@ task liftArmToDown()
 	writeDebugStreamLine("INFO: \"liftArmToDown\" Task Done");
 }
 
-task liftArmPID()
+task liftControl()
 {
-	writeDebugStreamLine("INFO: \"liftArmPID\" Task Started");
-	int lastRequestedLocation;
 	while(true)
 	{
-		if(lift.isauton && lift.isPIDon)
+		if(abs(liftEncoder()) > lift.tipHeight)
 		{
-				lift.error = lift.requestedLocation - liftEncoder();
-				startLiftArm(clamp((lift.error*lift.kp) + ((lift.error - lift.lastError)*lift.kd)));
-				lift.lastError = lift.error;
-				wait10Msec(10);
+			MOD = 3;
 		}
-		else if(!lift.isauton && lift.isPIDon)
+		else
 		{
+			MOD = 1;
+		}
+		if(vexRT[Btn5U] == 1 && !lift.isMax) //liftArm up
+		{
+			lift.isPIDon = false;
+			lift.isManualPos = false;
+			startLiftArm(maxSpeed);
+		}
+		else if(vexRT[Btn5D] == 1 && !SensorBoolean[liftDown]) //liftArm down
+		{
+			lift.isPIDon = false;
+			lift.isManualPos = false;
+			startLiftArm(minSpeed);
+		}
+		else if(vexRT[Btn8U] == 1)
+		{
+			lift.isPIDon = false;
+			lift.isManualPos = true;
+			lift.requestedLocation = 1550;
+		}
+		else if(vexRT[Btn8D] == 1)
+		{
+			lift.isPIDon = false;
+			lift.isManualPos = true;
+			lift.requestedLocation = 0;
+		}
+		else if(!lift.isPIDon && !lift.isManualPos)
+		{
+			wait10Msec(5);
 			lift.requestedLocation = liftEncoder();
-			while(lift.isPIDon)
-			{
-				lift.error = lift.requestedLocation - liftEncoder();
-				startLiftArm(clamp((lift.error*lift.kp) + ((lift.error - lift.lastError)*lift.kd)));
-				lift.lastError = lift.error;
-				wait10Msec(10);
-			}
+			lift.isPIDon = true;
 		}
-		wait10Msec(10);
+		else if(!lift.isPIDon && lift.isManualPos)
+		{
+			lift.isPIDon = true;
+		}
+		wait10Msec(1);
 	}
 }
