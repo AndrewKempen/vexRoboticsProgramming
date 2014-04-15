@@ -1,5 +1,3 @@
-#pragma systemfile
-
 const short leftButton = 1;
 const short centerButton = 2;
 const short rightButton = 4;
@@ -76,9 +74,9 @@ void lcdPrint(int line = 1)
 		if(strncmp(line0 , parameter, 16) != 0)
 		{
 			displayLCDCenteredString(0, parameter);
-			writeDebugStream("LCD: Printing \"");
+			writeDebugStreamLine("INFO: Printing \"");
 			writeDebugStream(parameter);
-			writeDebugStreamLine("\" To Line 0");
+			writeDebugStream("\" to LCD Line 0");
 			sprintf(line0, parameter);
 		}
 	}
@@ -87,10 +85,33 @@ void lcdPrint(int line = 1)
 		if(strncmp(line1 , parameter, 16) != 0)
 		{
 			displayLCDCenteredString(1, parameter);
-			writeDebugStream("LCD: Printing \"");
+			writeDebugStreamLine("INFO: Printing \"");
 			writeDebugStream(parameter);
-			writeDebugStreamLine("\" to Line 0");
+			writeDebugStream("\" to LCD Line 1");
 			sprintf(line1, parameter);
 		}
 	}
+}
+
+int lcdScreen(int maxScreen = 2)
+{
+	if(nLCDButtons == rightButton)
+	{
+		waitRelease();
+		screen++;
+	}
+	else if(nLCDButtons == leftButton)
+	{
+		waitRelease();
+		screen--;
+	}
+	if(screen < 0)
+	{
+		screen = maxScreen;
+	}
+	else if(screen > maxScreen)
+	{
+		screen = 1;
+	}
+	return screen;
 }
