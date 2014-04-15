@@ -7,9 +7,9 @@ int average(int num1, int num2)
 
 int clamp(int input)
 {
-	if(input > -127)
+	if(input < -127)
 		return -127;
-	else if(input < 127)
+	else if(input > 127)
 		return 127;
 	else
 		return input;
@@ -70,7 +70,16 @@ void startBaseTurn(int rightSpeed = 127, int leftSpeed = 127) //Start turning
 	motor[backRight] = rightSpeed;
 	motor[backLeft]  = leftSpeed;
 }
-
+void startRight(int rightSpeed = 127) //Start turning
+{
+	motor[frontRight] = rightSpeed;
+	motor[backRight] = rightSpeed;
+}
+void startLeft(int leftSpeed = 127) //Start turning
+{
+	motor[frontLeft]  = leftSpeed;
+	motor[backLeft]  = leftSpeed;
+}
 //Stopping Functions
 void allStop() //Stop EVERYTHING
 {
