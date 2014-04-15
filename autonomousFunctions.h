@@ -1,11 +1,15 @@
 #pragma systemFile
 
-void atonSetLiftArmDown(int speed = -127) //Put the hanging arm all the way down
+void wait(int seconds)
 {
-	speed = 0 - abs(speed);
-	while(SensorValue(liftDown) != 1)
+	wait1Msec(1000*seconds);
+}
+void autonSetLiftArmDown(int speed = -127) //Put the hanging arm all the way down
+{
+	speed = -abs(speed);
+	while(SensorValue[liftDown] != 1)
 	{
-		startLiftArm(-abs(speed));
+		startLiftArm(speed);
 	}
 	stopLiftArm();
 }
@@ -65,7 +69,7 @@ int leftEncoder(int reset = 1) //Read average of left wheel encoders
 		}
 		else
 		{
-			distance = (nMotorEncoder[backLeft] + nMotorEncoder[frontLeft]) / 2; //Average
+			distance = -(nMotorEncoder[backLeft] + nMotorEncoder[frontLeft]) / 2; //Average
 		}
 	}
 	return distance;
@@ -80,7 +84,7 @@ int liftEncoder(int clear = 1)
 	}
 	else
 	{
-		return abs(SensorValue[liftArmEncoder]);
+		return (-SensorValue[liftArmEncoder]);
 	}
 
 }
@@ -93,7 +97,7 @@ void baseEncoderReset() //Reset all base encoders
 
 void liftArmEncoderReset() //Reset hanging arm encoder
 {
-	atonSetLiftArmDown(-127);
+	autonSetLiftArmDown();
 	liftEncoder(0);
 }
 
@@ -134,7 +138,7 @@ int autonEncode(bool red, bool blue, bool hangingZone, bool middleZone, int rout
 	return returnAton;
 }
 
-void atonSetLiftArm(int locationInDegrees, int speed = 127) //Set the lift arm to a height in degrees
+void autonSetLiftArm(int locationInDegrees, int speed = 127) //Set the lift arm to a height in degrees
 {
 	if(locationInDegrees > liftEncoder())
 	{
@@ -154,7 +158,7 @@ void atonSetLiftArm(int locationInDegrees, int speed = 127) //Set the lift arm t
 }
 void resetEveryThing()
 {
-	atonSetLiftArmDown();
+	autonSetLiftArmDown();
 	liftArmEncoderReset();
 	baseEncoderReset();
 	clearLCD();
@@ -175,10 +179,6 @@ void batteryCheck()
 		}
 	}
 	powerExpanderLevel = (int)((float)SensorValue[powerExpander] * 5.46);
-	if(powerExpanderLevel > 9000)
-	{
-		powerExpanderLevel = (int)((float)SensorValue[powerExpander] * 3.57);
-	}
 	if(powerExpanderLevel < SECONDBATTERYTHRESHOLD)
 	{
 		parameter = "2nd Battery Low";
@@ -231,5 +231,74 @@ bool liftArmButtonEvent()
 		liftBtnUpLastState = vexRT[Btn6U];
 		liftBtnDownLastState = vexRT[Btn6D];
 		return false;
+	}
+}
+void lineFollow(int degrees, int low = 97, int high = 127)
+{
+	rightEncoder(0);
+	while(rightEncoder() < degrees)
+	{
+		if(SensorValue(lineRight) < threshold)
+		{
+			startBaseTurn(low, high);
+		}
+		else if(SensorValue(lineLeft) < threshold)
+		{
+			startBaseTurn(high, low);
+		}
+		else if(SensorValue(lineMiddle) > threshold)
+		{
+			startBaseTurn(high, high);
+		}
+	}
+	stopBase();
+}
+void lineFollowLine(int low = 97, int high = 127)
+{
+	rightEncoder(0);
+	while(SensorValue[lineFarRight] > farThreshold && SensorValue[lineFarLeft] > farThreshold)
+	{
+		if(SensorValue(lineRight) < threshold)
+		{
+			startBaseTurn(low, high);
+		}
+		else if(SensorValue(lineLeft) < threshold)
+		{
+			startBaseTurn(high, low);
+		}
+		else if(SensorValue(lineMiddle) > threshold)
+		{
+			startBaseTurn(high, high);
+		}
+	}
+	stopBase();
+}
+
+void lineFollowBack(int degrees, int low = -97, int high = -127)
+{
+	rightEncoder(0);
+	while(rightEncoder() < degrees)
+	{
+		if(SensorValue(lineLeft) < threshold)
+		{
+			startBaseTurn(high, low);
+		}
+		else if(SensorValue(lineRight) < threshold)
+		{
+			startBaseTurn(low, high);
+		}
+		else if(SensorValue(lineMiddle) > threshold)
+		{
+			startBaseTurn(high, high);
+		}
+	}
+	stopBase();
+}
+
+void rightTurn(bool red, int rightDistance, int rightSpeed = -127, int leftSpeed = 127)
+{
+	baseEncoderReset();
+	if(red)
+	{
 	}
 }
