@@ -23,19 +23,61 @@ void hangingZoneHang(bool red)
 {
 
 }
+
 void hangingZoneMoveBigBall(bool red)
 {
 
 }
 void middleZoneStash(bool red)
 {
-
 }
 void middleZoneGetBigBall(bool red)
 {
 
 }
-
+void hangingZoneStash(bool red)
+{
+	startIntake(127);
+	lineFollow(620);
+	wait(1);
+	lineFollowBack(620);
+	startIntake(25);
+	lift.requestedLocation = 200;
+	lift.isPIDon = true;
+	startBase(-23);
+	wait(1);
+	rightEncoder(0);
+	while(rightEncoder() < 600)
+	{
+		startBase(-127);
+	}
+	stopBase();
+	startIntake(63);
+	if(!red)
+	{
+		rightEncoder(0);
+		while(rightEncoder() < 580)
+		{
+			startBaseTurn(-127, 127);
+		}
+	}
+	else
+	{
+		leftEncoder(0);
+		while(leftEncoder() < 580)
+		{
+			startBaseTurn(127, -127);
+		}
+	}
+	stopBase();
+	stopIntake();
+	lift.isPIDon = false;
+	autonSetLiftArmDown();
+	lift.requestedLocation = 0;
+	startBase(-63);
+	wait(1);
+	middleZoneStash(red);
+}
 void auton(int autonomusCode)
 {
 	bool red;
@@ -57,6 +99,9 @@ void auton(int autonomusCode)
 			return;
 		case moveBigBallAuton:
 			hangingZoneMoveBigBall(red);
+			return;
+		case hangingZoneStashAuton:
+			hangingZoneStash(red);
 			return;
 		default:
 			writeDebugStreamLine("ERROR: Unexpected auton number at \"auton\"");
