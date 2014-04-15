@@ -18,16 +18,22 @@
 int autonomousSelector()
 {
 	bool timeout = true;
-	bool red, blue, hangingZone, middleZone;
 	int lastSelection = 0;
-	int screenRH = 1; //1
-	int screenRM = 1; //2
-	int screenBH = 1; //3
-	int screenBM = 1; //4
 	int autonCode = 0;
 	string display;
 	ClearTimer(T1);
 	ClearTimer(T2);
+	if(SensorBoolean[isautonSelectFailure])
+	{
+		if(SensorBoolean[isredAlliance] && SensorBoolean[ishangingZone])
+			autonCode = 11;
+		else if(SensorBoolean[isredAlliance] && !SensorBoolean[ishangingZone])
+			autonCode = 21;
+		else if(!SensorBoolean[isredAlliance] && SensorBoolean[ishangingZone])
+			autonCode = 31;
+		else if(!SensorBoolean[isredAlliance] && !SensorBoolean[ishangingZone])
+			autonCode = 41;
+	}
 	while(bIfiRobotDisabled && autonCode == 0) //15 Second Timeout
 	{
 		bLCDBacklight = true;									// Turn on LCD Backlight
@@ -40,31 +46,13 @@ int autonomousSelector()
 				ClearTimer(T2);
 			}
 			lastSelection = 1;
-
-			if(nLCDButtons == rightButton)
-			{
-				waitRelease();
-				screenRH++;
-			}
-			else if(nLCDButtons == leftButton)
-			{
-				waitRelease();
-				screenRH--;
-			}
-			if(screenRH == -1)
-			{
-				screenRH = 2;
-			}
-			else if(screenRH == 3)
-			{
-				screenRH = 1;
-			}
-			if(screenRH == 1)
+			screen = lcdScreen(2);
+			if(screen == 1)
 			{
 				parameter = "<     Hang      ";
 				lcdPrint(0);
 			}
-			else if(screenRH == 2)
+			else if(screen == 2)
 			{
 				parameter = "< Move Big Ball ";
 				lcdPrint(0);
@@ -74,41 +62,13 @@ int autonomousSelector()
 				waitRelease();
 				if(confirm())
 				{
-					red = true;
-					blue = false;
-					hangingZone = true;
-					middleZone = false;
-					autonCode = autonEncode(red, blue, hangingZone, middleZone, screenRH);
+					autonCode = autonEncode(true, false, true, false, screen);
 				}
 			}
 		}
 		else if(SensorValue[autonSelector]>573 && SensorValue[autonSelector]<=1228 && autonCode == 0) //Red Middle Zone
 		{
-			if(lastSelection != 2)
-			{
-				clearLCD();
-				ClearTimer(T2);
-			}
-			lastSelection = 2;
-			parameter = "      Lock      ";
-			lcdPrint(1);
-			if(screenRM == 1)
-			{
-				parameter = "< Push Big Ball ";
-				lcdPrint(0);
-			}
-			if(nLCDButtons == centerButton)
-			{
-				waitRelease();
-				if(confirm())
-				{
-					red = true;
-					blue = false;
-					hangingZone = false;
-					middleZone = true;
-					autonCode = autonEncode(red, blue, hangingZone, middleZone, screenRM);
-				}
-			}
+
 		}
 		else if(SensorValue[autonSelector]>1228 && SensorValue[autonSelector]<=2294) //Battery Levels
 		{
@@ -153,82 +113,11 @@ int autonomousSelector()
 		}
 		else if(SensorValue[autonSelector]<=3522 && SensorValue[autonSelector]>2294 && autonCode == 0) //Blue Middle
 		{
-			if(lastSelection != 3)
-			{
-				clearLCD();
-				ClearTimer(T2);
-			}
-			lastSelection = 3;
-			parameter = "      Lock      ";
-			lcdPrint(1);
-			if(screenBM == 1)
-			{
-				parameter = " Push Big Ball >";
-				lcdPrint(0);
-			}
-			if(nLCDButtons == centerButton)
-			{
-				waitRelease();
-				if(confirm())
-				{
-					red = false;
-					blue = true;
-					hangingZone = false;
-					middleZone = true;
-					autonCode = autonEncode(red, blue, hangingZone, middleZone, screenBM);
-				}
-			}
+
 		}
 		else if(SensorValue[autonSelector]>3522 && SensorValue[autonSelector]<=4095 && autonCode == 0) //Blue Hang
 		{
-			if(lastSelection != 4)
-			{
-				clearLCD();
-				ClearTimer(T2);
-			}
-			lastSelection = 4;
-			parameter = "<     Lock     >";
-			lcdPrint(1);
-			if(nLCDButtons == rightButton)
-			{
-				waitRelease();
-				screenBH++;
-			}
-			else if(nLCDButtons == leftButton)
-			{
-				waitRelease();
-				screenBH--;
-			}
-			if(screenBH == -1)
-			{
-				screenBH = 2;
-			}
-			else if(screenBH == 3)
-			{
-				screenBH = 1;
-			}
-			if(screenBH == 1)
-			{
-				parameter = "      Hang     >";
-				lcdPrint(0);
-			}
-			else if(screenBH == 2)
-			{
-				parameter = " Move Big Ball >";
-				lcdPrint(0);
-			}
-			if(nLCDButtons == centerButton)
-			{
-				waitRelease();
-				if(confirm())
-				{
-					red = false;
-					blue = true;
-					hangingZone = true;
-					middleZone = false;
-					autonCode = autonEncode(red, blue, hangingZone, middleZone, screenBH);
-				}
-			}
+
 		}
 		if(time1[T2] < 5000)
 		{
@@ -240,7 +129,7 @@ int autonomousSelector()
 		for(int i=0;i<4;i++)
 		{
 			displayLCDCenteredString(0, "Timeout!");
-			wait10Msec(75);
+			wait10Msec(50);
 			clearLCDLine(0);
 			wait10Msec(50);
 		}
