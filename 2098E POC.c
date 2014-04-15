@@ -1,9 +1,11 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
-#pragma config(Sensor, in1,    autonSelector,  sensorPotentiometer)
-#pragma config(Sensor, in2,    powerExpander,  sensorAnalog)
-#pragma config(Sensor, in5,    lineLeft,       sensorLineFollower)
-#pragma config(Sensor, in6,    lineMiddle,     sensorLineFollower)
-#pragma config(Sensor, in7,    lineRight,      sensorLineFollower)
+#pragma config(Sensor, in1,    powerExpander,  sensorAnalog)
+#pragma config(Sensor, in2,    autonSelector,  sensorPotentiometer)
+#pragma config(Sensor, in4,    lineFarRight,   sensorLineFollower)
+#pragma config(Sensor, in5,    lineFarLeft,    sensorLineFollower)
+#pragma config(Sensor, in6,    lineRight,      sensorLineFollower)
+#pragma config(Sensor, in7,    lineMiddle,     sensorLineFollower)
+#pragma config(Sensor, in8,    lineLeft,       sensorLineFollower)
 #pragma config(Sensor, dgtl1,  liftArmEncoder, sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  liftDown,       sensorTouch)
 #pragma config(Sensor, dgtl5,  middleRightBackup, sensorQuadEncoder)
@@ -32,11 +34,13 @@
 #include "lcdFunctions.h"
 #include "functions.h"
 #include "autonomousFunctions.h"
+#include "PIDTasks.h"
 #include "tasks.h"
 #include "autonomousSelector.h"
 #include "autonomous.h"
 #include "driverControl.h"
 #include "programmingSkills.h"
+
 
 #pragma platform(VEX)
 #pragma competitionControl(Competition)
@@ -68,7 +72,8 @@ void pre_auton()
 		autonNumber = autonomousSelector();
 		writeDebugStreamLine("INFO: Autonomous Selector Returned %d", autonNumber);
 	}
-	//resetEveryThing();
+	resetEveryThing();
+	liftValues();
 	bStopTasksBetweenModes = true;
 	writeDebugStreamLine("INFO: Pre_Auton Done");
 }
@@ -76,13 +81,21 @@ void pre_auton()
 task autonomous()
 {
 	writeDebugStreamLine("INFO: Autonomous Started");
-	StartTask(liftArmLimiter);
-	auton(autonNumber);
+	lineFollowBack(7000);
+	stopBase();
+	//auton(11);
 	writeDebugStreamLine("INFO: Autonomous Done");
 }
 
 task usercontrol()
 {
+	StartTask(liftArmPID);
+	auton(33);
+	while(true){wait1Msec(1);}
+	lift.requestedLocation = 0;
+	lift.isPIDon = true;
+	StartTask(liftArmPID);
+	StartTask(liftControl);
 	writeDebugStreamLine("INFO: Driver_Control Started");
 	driverControl(true);
 }
