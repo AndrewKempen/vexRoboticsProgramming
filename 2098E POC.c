@@ -81,17 +81,16 @@ void pre_auton()
 task autonomous()
 {
 	writeDebugStreamLine("INFO: Autonomous Started");
-	lineFollowBack(7000);
-	stopBase();
-	//auton(11);
+	lift.requestedLocation = 0;
+	lift.isPIDon = true;
+	StartTask(liftArmPID);
+	baseEncoderReset();
+	hangingZoneHang(false);
 	writeDebugStreamLine("INFO: Autonomous Done");
 }
 
 task usercontrol()
 {
-	StartTask(liftArmPID);
-	auton(33);
-	while(true){wait1Msec(1);}
 	lift.requestedLocation = 0;
 	lift.isPIDon = true;
 	StartTask(liftArmPID);
