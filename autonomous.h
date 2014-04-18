@@ -21,15 +21,61 @@
 
 void hangingZoneHang(bool red)
 {
-
+	startIntake(127); //Intake start at 127
+	lineFollow(720); //Line follow
+	wait(1.5);
+	stopIntake(); //Stop intake
+	lineFollowBack(100);
+	lift.requestedLocation = lift.maxHeight;
+	lift.isPIDon = true;
+	wait(1);
+	rightEncoder(0); //Reset right encoders
+	while(rightEncoder()<230) //Turn
+	{
+		startBaseTurn(63, -63);
+	}
+	stopBase(); //Stop base
+	wait(5);
+	ClearTimer(T4);
+	rightEncoder(0);
+	while(rightEncoder() < 860 && time1[T4] < 3500) //Forward with timeout
+	{
+		startBase(-127);
+	}
+	stopBase(); //Stop Base
+	lift.requestedLocation = 400;
 }
-
 void hangingZoneMoveBigBall(bool red)
 {
 
 }
 void middleZoneStash(bool red)
 {
+	lineFollow(2500);
+	startIntake(23);
+	lift.isPIDon = true;
+	lift.requestedLocation = lift.stashHeight;
+	wait(1);
+	rightEncoder(0);
+	while(rightEncoder() < 255)
+	{
+		startBaseTurn(63, -63);
+	}
+	stopBase();
+	rightEncoder(0);
+	while(rightEncoder() < 250)
+	{
+		startBase(63);
+	}
+	stopBase();
+	wait(4);
+	rightEncoder(0);
+	while(rightEncoder() < 190)
+	{
+		startBase(63);
+	}
+	stopBase();
+	startIntake(-43);
 }
 void middleZoneGetBigBall(bool red)
 {
@@ -42,41 +88,61 @@ void hangingZoneStash(bool red)
 	wait(1);
 	lineFollowBack(620);
 	startIntake(25);
-	lift.requestedLocation = 200;
+	lift.requestedLocation = 250;
 	lift.isPIDon = true;
 	startBase(-23);
 	wait(1);
+	stopBase();
 	rightEncoder(0);
 	while(rightEncoder() < 600)
 	{
 		startBase(-127);
 	}
 	stopBase();
+	wait(1);
 	startIntake(63);
 	if(!red)
 	{
 		rightEncoder(0);
-		while(rightEncoder() < 580)
+		while(rightEncoder() < 800)
 		{
 			startBaseTurn(-127, 127);
 		}
+		stopIntake();
 	}
 	else
 	{
 		leftEncoder(0);
-		while(leftEncoder() < 580)
+		while(leftEncoder() < 800)
 		{
-			startBaseTurn(127, -127);
+			startBaseTurn(63, -63);
 		}
+		stopIntake();
 	}
 	stopBase();
-	stopIntake();
-	lift.isPIDon = false;
-	autonSetLiftArmDown();
 	lift.requestedLocation = 0;
 	startBase(-63);
 	wait(1);
-	middleZoneStash(red);
+	stopBase();
+	startBaseTurn(120, 127);
+	wait(1);
+	stopBase();
+	/*
+	wait(1);
+	rightEncoder(0);
+	while(rightEncoder() < 320)
+	{
+		startBase(63);
+	}
+	stopBase();
+	wait(1);
+	leftEncoder(0);
+	while(SensorValue[lineMiddle] > threshold)
+	{
+		startLeft(63);
+	}
+	stopBase();
+	*/
 }
 void auton(int autonomusCode)
 {

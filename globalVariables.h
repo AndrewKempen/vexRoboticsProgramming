@@ -19,8 +19,8 @@ int liftBtnUpLastState;
 int liftBtnDownLastState;
 
 bool armIsDown = true;
-int threshold = 1852;
-int farThreshold = 1852;
+int threshold = 1448;
+int farThreshold = 2104;
 
 const int	noZone = 00;
 const int	redHangingZone = 10;
@@ -55,44 +55,45 @@ struct{
 static liftStruct lift;
 
 
-struct{
-	float requestedLocation;
-	float error;
-	float lastError;
-} rightStruct;
-static rightStruct right;
+//struct{
+//	float requestedLocation;
+//	float error;
+//	float lastError;
+//} rightStruct;
+//static rightStruct right;
 
-struct{
-	float requestedLocation;
-	float error;
-	float lastError;
-} leftStruct;
-static leftStruct left;
+//struct{
+//	float requestedLocation;
+//	float error;
+//	float lastError;
+//} leftStruct;
+//static leftStruct left;
 
-struct{
-	bool isPIDon;
-	float kp;
-	float kd;
-} baseStruct;
-static baseStruct robot;
+//struct{
+//	bool isPIDon;
+//	float kp;
+//	float kd;
+//} baseStruct;
+//static baseStruct robot;
 
 void liftPIDValues()
 {
-	lift.kp = 2;
-	lift.kd = 0.4;
+	lift.kp = 0.8;
+	lift.kd = 0.1;
 	lift.lastError = 0;
 }
-void robotPIDValues()
-{
-	robot.kp = 0.6;
-	robot.kd = 0.2;
-	right.lastError = 0;
-	left.lastError = 0;
-}
+//void robotPIDValues()
+//{
+//	robot.kp = 0.19;
+//	robot.kd = 0.11;
+//	right.lastError = 0;
+//	left.lastError = 0;
+//}
 void liftValues() //Set Hanging Arm Maximum
 {
 	liftPIDValues();
-	robotPIDValues();
-	lift.maxHeight = 1790;
+	//robotPIDValues();
+	lift.maxHeight = 1820;
+	lift.stashHeight = 1550;
 	lift.tipHeight = 500;
 }

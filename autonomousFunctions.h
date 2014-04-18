@@ -39,7 +39,7 @@ int rightEncoder(int reset = 1) //Read average of right wheel encoders
 		}
 		else
 		{
-			distance = (abs(nMotorEncoder[backRight]) + abs(nMotorEncoder[frontRight])) / 2; //Average
+			distance = (abs(nMotorEncoder[backRight]) + (abs(nMotorEncoder[frontRight])) / 2); //Average
 		}
 	}
 	return distance;
@@ -69,7 +69,7 @@ int leftEncoder(int reset = 1) //Read average of left wheel encoders
 		}
 		else
 		{
-			distance = -(nMotorEncoder[backLeft] + nMotorEncoder[frontLeft]) / 2; //Average
+			distance = (abs(nMotorEncoder[backLeft]) + (abs(nMotorEncoder[frontLeft])) / 2); //Average
 		}
 	}
 	return distance;
@@ -233,63 +233,63 @@ bool liftArmButtonEvent()
 		return false;
 	}
 }
-void lineFollow(int degrees, int low = 97, int high = 127)
+void lineFollow(int degrees, int low = 83, int high = 97, int tthreshold = threshold)
 {
 	rightEncoder(0);
 	while(rightEncoder() < degrees)
 	{
-		if(SensorValue(lineRight) < threshold)
+		if(SensorValue(lineMiddle) < tthreshold)
+		{
+			startBaseTurn(high, high);
+		}
+		if(SensorValue(lineRight) < tthreshold)
 		{
 			startBaseTurn(low, high);
 		}
-		else if(SensorValue(lineLeft) < threshold)
+		if(SensorValue(lineLeft) < tthreshold)
 		{
 			startBaseTurn(high, low);
-		}
-		else if(SensorValue(lineMiddle) > threshold)
-		{
-			startBaseTurn(high, high);
 		}
 	}
 	stopBase();
 }
-void lineFollowLine(int low = 97, int high = 127)
+void lineFollowLine(int low = 83, int high = 97)
 {
 	rightEncoder(0);
 	while(SensorValue[lineFarRight] > farThreshold && SensorValue[lineFarLeft] > farThreshold)
 	{
-		if(SensorValue(lineRight) < threshold)
+		if(SensorValue(lineMiddle) < threshold)
 		{
-			startBaseTurn(low, high);
+			startBaseTurn(high, high);
 		}
-		else if(SensorValue(lineLeft) < threshold)
+		else if(SensorValue(lineRight) < threshold)
 		{
 			startBaseTurn(high, low);
 		}
-		else if(SensorValue(lineMiddle) > threshold)
+		else if(SensorValue(lineLeft) < threshold)
 		{
-			startBaseTurn(high, high);
+			startBaseTurn(low, high);
 		}
 	}
 	stopBase();
 }
 
-void lineFollowBack(int degrees, int low = -97, int high = -127)
+void lineFollowBack(int degrees, int low = -83, int high = -97)
 {
 	rightEncoder(0);
 	while(rightEncoder() < degrees)
 	{
-		if(SensorValue(lineLeft) < threshold)
+		if(SensorValue(lineMiddle) < threshold)
 		{
-			startBaseTurn(high, low);
+			startBaseTurn(high, high);
 		}
-		else if(SensorValue(lineRight) < threshold)
+		if(SensorValue(lineRight) < threshold)
 		{
 			startBaseTurn(low, high);
 		}
-		else if(SensorValue(lineMiddle) > threshold)
+		if(SensorValue(lineLeft) < threshold)
 		{
-			startBaseTurn(high, high);
+			startBaseTurn(high, low);
 		}
 	}
 	stopBase();

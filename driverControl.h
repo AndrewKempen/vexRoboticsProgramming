@@ -6,6 +6,14 @@ void driverControl(bool infiniteLoop = true)
 	bool intakeBtnReleased = false;
 	do
 	{
+		if(abs(liftEncoder()) > lift.tipHeight)
+		{
+			MOD = 3;
+		}
+		else
+		{
+			MOD = 1;
+		}
 		if(abs(vexRT[Ch3]) > THRESHOLDD) //Make it so that motors don't whine
 		{
 			motor[backLeft]  = (vexRT[Ch3]/MOD);

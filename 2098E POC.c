@@ -85,7 +85,7 @@ task autonomous()
 	lift.isPIDon = true;
 	StartTask(liftArmPID);
 	baseEncoderReset();
-	hangingZoneHang(false);
+	middleZoneStash(false);
 	writeDebugStreamLine("INFO: Autonomous Done");
 }
 
