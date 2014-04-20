@@ -212,9 +212,6 @@ void auton(int autonomusCode)
 		case moveBigBallAuton:
 			hangingZoneMoveBigBall(red);
 			return;
-		case hangingZoneStashAuton:
-			hangingZoneStash(red);
-			return;
 		default:
 			writeDebugStreamLine("ERROR: Unexpected auton number at \"auton\"");
 			return;
@@ -225,10 +222,10 @@ void auton(int autonomusCode)
 		switch(autonomusCode - (zone*10))
 		{
 		case stashAuton:
-			middleZoneStash(red);
+			middleZonePushBigBalls(red);
 			return;
 		case getBigBallAuton:
-			middleZoneGetBigBall(red);
+			middleZoneStash(red);
 			return;
 		default:
 			writeDebugStreamLine("ERROR: Unexpected auton number at \"auton\"");
