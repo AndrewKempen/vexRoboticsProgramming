@@ -49,33 +49,79 @@ void hangingZoneMoveBigBall(bool red)
 {
 
 }
-void middleZoneStash(bool red)
+void middleZonePushBigBalls(bool red)
 {
-	lineFollow(2500);
-	startIntake(23);
 	lift.isPIDon = true;
-	lift.requestedLocation = lift.stashHeight;
-	wait(1);
-	rightEncoder(0);
-	while(rightEncoder() < 255)
-	{
-		startBaseTurn(63, -63);
-	}
-	stopBase();
-	rightEncoder(0);
-	while(rightEncoder() < 250)
-	{
-		startBase(63);
-	}
-	stopBase();
+	lift.requestedLocation = 900;
+	wait(3.5);
+	lineFollow(850);
+	startIntake(-63);
+	wait(1.3);
+	lineFollowBack(850);
 	wait(4);
 	rightEncoder(0);
-	while(rightEncoder() < 190)
+	while(rightEncoder() < 600)
+	{
+		startBase(127);
+	}
+	stopBase();
+	wait(1);
+	leftEncoder(0);
+	while(leftEncoder() < 950)
+	{
+		startLeft(127);
+	}
+	stopBase();
+
+	rightEncoder(0);
+	while(rightEncoder() < 400)
+	{
+		startBase(127);
+	}
+	stopBase();
+}
+void middleZoneStash(bool red)
+{
+	lineFollow(2200);
+	startIntake(23);
+	lift.isPIDon = true;
+	lift.requestedLocation = lift.stashHeight + 100;
+	wait(1);
+	rightEncoder(0);
+	while(rightEncoder() < 743)
+	{
+		startRight(63);
+	}
+	stopBase();
+	rightEncoder(0);
+	while(rightEncoder() < 150)
 	{
 		startBase(63);
 	}
 	stopBase();
-	startIntake(-43);
+	wait(5);
+	rightEncoder(0);
+	while(rightEncoder() < 110)
+	{
+		startBase(63);
+	}
+	stopBase();
+	startIntake(-42);
+	wait(1);
+	startIntake(127);
+	wait(1);
+	startIntake(-42);
+	wait(1);
+	startIntake(127);
+	rightEncoder(0);
+	while(rightEncoder() < 200)
+	{
+		startBase(-63);
+	}
+	stopBase();
+	lift.requestedLocation = lift.stashHeight - 100;
+	wait(2);
+	startIntake(-35);
 }
 void middleZoneGetBigBall(bool red)
 {
@@ -132,14 +178,14 @@ void hangingZoneStash(bool red)
 	rightEncoder(0);
 	while(rightEncoder() < 320)
 	{
-		startBase(63);
+	startBase(63);
 	}
 	stopBase();
 	wait(1);
 	leftEncoder(0);
 	while(SensorValue[lineMiddle] > threshold)
 	{
-		startLeft(63);
+	startLeft(63);
 	}
 	stopBase();
 	*/
