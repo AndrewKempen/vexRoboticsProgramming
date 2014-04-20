@@ -47,7 +47,26 @@ void hangingZoneHang(bool red)
 }
 void hangingZoneMoveBigBall(bool red)
 {
-
+		startIntake(127); //Start intake at 127
+		lineFollow(false, 890); //Follow line
+		lift.requestedLocation = 250;
+		lift.isPIDon = true;
+		baseEncoderReset(); //Clear all encoders on base
+		stopIntake(); //Stop the intake
+		while(rightEncoder()<390) //Turn
+		{
+			startBaseTurn(63, -63);
+		}
+		startIntake(50); //Start intake at 50 to keep the buckyballs in
+		moveBase(1400, true, 100); //Move forward
+		stopIntake(); //Stop intake
+		wait1Msec(500); //Pause to let the big ball settle
+		baseEncoderReset(); //Reset the base's encoders
+		lift.requestedLocation = 900;
+		moveBase(320, true, 63); //Advance to the barrier
+		stopBase(); //Stop the base
+		startIntake(-127); //Outake big ball into other big ball
+		wait10Msec(100); //Pause to outake the bigball
 }
 void middleZonePushBigBalls(bool red)
 {
@@ -72,7 +91,6 @@ void middleZonePushBigBalls(bool red)
 		startLeft(127);
 	}
 	stopBase();
-
 	rightEncoder(0);
 	while(rightEncoder() < 400)
 	{
