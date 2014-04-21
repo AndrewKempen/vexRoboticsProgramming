@@ -62,18 +62,18 @@ task liftControl()
 	bool liftBtnReleased = false;
 	while(true)
 	{
-		if(vexRT[Btn5U] == 0 && liftOn) //If intake is on and intake button is released
+		if(vexRT[Btn5U] == 0 && liftOn)
 		{
 			liftBtnReleased = true;
 		}
-		if(vexRT[Btn5U] == 1 && !liftBtnReleased && !liftOn && time1[T2] > 1000) //Intake
+		if(vexRT[Btn5U] == 1 && !liftBtnReleased && !liftOn && time1[T2] > 1000)
 		{
 			lift.isPIDon = false;
 			lift.isManualPos = true;
 			lift.requestedLocation = 250;
-			liftOn=true;
+			liftOn = true;
 		}
-		if(vexRT[Btn5U] == 1 && liftBtnReleased) //Intake button has been pressed after releaseing it so stop it
+		if(vexRT[Btn5U] == 1 && liftBtnReleased)
 		{
 			liftOn = false;
 			liftBtnReleased = false;
@@ -82,7 +82,7 @@ task liftControl()
 			lift.requestedLocation = lift.stashHeight;
 			ClearTimer(T2);
 		}
-		else if(vexRT[Btn8D] == 1) //Outake
+		else if(vexRT[Btn8D] == 1)
 		{
 			liftOn = false;
 			liftBtnReleased = false;
@@ -92,7 +92,7 @@ task liftControl()
 			liftOn = false;
 			liftBtnReleased = false;
 		}
-		if(vexRT[Btn8U] == 1 && liftEncoder() < lift.maxHeight) //liftArm up
+		if(vexRT[Btn8U] == 1)
 		{
 			liftOn = false;
 			liftBtnReleased = false;

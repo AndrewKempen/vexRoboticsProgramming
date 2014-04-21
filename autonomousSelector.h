@@ -1,3 +1,4 @@
+#pragma systemfile
 /*
 +--------+-------------------+-----------------------------------+
 | Number | First Number (#0) | Second Number (0#)                |
@@ -18,65 +19,90 @@
 int autonomousSelector()
 {
 	bool timeout = true;
-	int lastSelection = 0;
+	int lastScreen = 0;
 	int autonCode = 0;
+	int screen = 1;
 	string display;
+	string mainBattery, backupBattery;
 	ClearTimer(T1);
 	ClearTimer(T2);
-	if(SensorBoolean[isautonSelectFailure])
-	{
-		if(SensorBoolean[isredAlliance] && SensorBoolean[ishangingZone])
-			autonCode = 11;
-		else if(SensorBoolean[isredAlliance] && !SensorBoolean[ishangingZone])
-			autonCode = 21;
-		else if(!SensorBoolean[isredAlliance] && SensorBoolean[ishangingZone])
-			autonCode = 31;
-		else if(!SensorBoolean[isredAlliance] && !SensorBoolean[ishangingZone])
-			autonCode = 41;
-	}
-	while(bIfiRobotDisabled && autonCode == 0) //15 Second Timeout
+	while(autonCode == 0 && time1[T1] < 15000) //15 Second Timeout
 	{
 		bLCDBacklight = true;									// Turn on LCD Backlight
-		string mainBattery, backupBattery;
-		if(SensorValue[autonSelector]<=573 && SensorValue[autonSelector]>=0 && autonCode == 0) //Red Hanging Zone
+		screen = lcdScreen(screen, 2);
+		if(screen == 1)
 		{
-			if(lastSelection != 1)
+			if(lastScreen != 1)
 			{
 				clearLCD();
-				ClearTimer(T2);
+				ClearTimer(T1);
 			}
-			lastSelection = 1;
-			screen = lcdScreen(2);
-			if(screen == 1)
+			lastScreen = 1;
+			if(SensorBoolean[isRedAlliance] && SensorBoolean[isHangingZone])
 			{
-				parameter = "<     Hang      ";
+				parameter = "< Hanging Zone  ";
 				lcdPrint(0);
 			}
-			else if(screen == 2)
+			else if(!SensorBoolean[isRedAlliance] && SensorBoolean[isHangingZone])
 			{
-				parameter = "< Move Big Ball ";
+				parameter = "  Hanging Zone >";
 				lcdPrint(0);
+			}
+			else if(SensorBoolean[isRedAlliance] && !SensorBoolean[isHangingZone])
+			{
+				parameter = "<  Middle Zone  ";
+				lcdPrint(0);
+			}
+			else if(!SensorBoolean[isRedAlliance] && !SensorBoolean[isHangingZone])
+			{
+				parameter = "   Middle Zone >";
+				lcdPrint(0);
+			}
+
+			if(SensorBoolean[isHangingZone] && SensorBoolean[isAutonTwo])
+			{
+				parameter = "  >Move Balls<  ";
+				lcdPrint(1);
+			}
+			else if(SensorBoolean[isHangingZone] && !SensorBoolean[isAutonTwo])
+			{
+				parameter = "     >Hang<     ";
+				lcdPrint(1);
+			}
+			else if(!SensorBoolean[isHangingZone] && !SensorBoolean[isAutonTwo])
+			{
+				parameter = "  >Push Balls<  ";
+				lcdPrint(1);
+			}
+			else if(!SensorBoolean[isHangingZone] && SensorBoolean[isAutonTwo])
+			{
+				parameter = "     >Stash<    ";
+				lcdPrint(1);
 			}
 			if(nLCDButtons == centerButton)
 			{
 				waitRelease();
+				ClearTimer(T1);
 				if(confirm())
 				{
-					autonCode = autonEncode(true, false, true, false, screen);
+					autonCode = autonEncode(SensorBoolean[isRedAlliance], !SensorBoolean[isRedAlliance], SensorBoolean[isHangingZone], !SensorBoolean[isHangingZone], (SensorValue[isAutonTwo] + 1));
+				}
+				else
+				{
+					screen = 2;
+					line0 = "";
+					line1 = "";
 				}
 			}
 		}
-		else if(SensorValue[autonSelector]>573 && SensorValue[autonSelector]<=1228 && autonCode == 0) //Red Middle Zone
+		if(screen == 2) //Battery Levels
 		{
-
-		}
-		else if(SensorValue[autonSelector]>1228 && SensorValue[autonSelector]<=2294) //Battery Levels
-		{
-			if(lastSelection != 5)
+			if(lastScreen != 2)
 			{
 				clearLCD();
+				ClearTimer(T1);
 			}
-			lastSelection = 5;
+			lastScreen = 2;
 			sprintf(line0, "");
 			sprintf(line1, "");
 			displayLCDString(0, 0, "Primary: ");
@@ -86,14 +112,6 @@ int autonomousSelector()
 			sprintf(backupBattery, "%1.2f%c", BackupBatteryLevel/1000.0, 'V');
 			displayNextLCDString(backupBattery);
 			if(nLCDButtons == centerButton)
-			{
-				waitRelease();
-				if(confirm())
-				{
-					autonCode = 61;
-				}
-			}
-			else if(nLCDButtons == rightButton)
 			{
 				waitRelease();
 				ClearTimer(T1);
@@ -111,20 +129,8 @@ int autonomousSelector()
         wait1Msec(4000);
 			}
 		}
-		else if(SensorValue[autonSelector]<=3522 && SensorValue[autonSelector]>2294 && autonCode == 0) //Blue Middle
-		{
-
-		}
-		else if(SensorValue[autonSelector]>3522 && SensorValue[autonSelector]<=4095 && autonCode == 0) //Blue Hang
-		{
-
-		}
-		if(time1[T2] < 5000)
-		{
-			ClearTimer(T1);
-		}
 	}
-	if(timeout && autonCode == 0)
+	if(autonCode == 0)
 	{
 		for(int i=0;i<4;i++)
 		{

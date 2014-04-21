@@ -10,7 +10,6 @@ int autonNumber;
 string parameter;
 string line1;
 string line0;
-int screen;
 int MOD = 1;
 bool intakeOn = false;
 bool intakeBtnReleased = false;
@@ -78,8 +77,8 @@ static liftStruct lift;
 
 void liftPIDValues()
 {
-	lift.kp = 0.8;
-	lift.kd = 0.1;
+	lift.kp = 2;
+	lift.kd = 0.4;
 	lift.lastError = 0;
 }
 //void robotPIDValues()

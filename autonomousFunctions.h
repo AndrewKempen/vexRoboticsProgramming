@@ -1,8 +1,8 @@
 #pragma systemFile
 
-void wait(int seconds)
+void wait(float seconds)
 {
-	wait1Msec(1000*seconds);
+	wait1Msec((int)1000*seconds);
 }
 void autonSetLiftArmDown(int speed = -127) //Put the hanging arm all the way down
 {
@@ -35,7 +35,7 @@ int rightEncoder(int reset = 1) //Read average of right wheel encoders
 	{
 		if(SensorBoolean[isIMEFailure])
 		{
-			distance = SensorValue[middleRightBackup];
+			distance = abs((int)(SensorValue[middleRightBackup] * 1.0888));
 		}
 		else
 		{
@@ -65,7 +65,7 @@ int leftEncoder(int reset = 1) //Read average of left wheel encoders
 	{
 		if(SensorBoolean[isIMEFailure])
 		{
-			distance = SensorValue[middleLeftBackup];
+			distance = abs((int)(SensorValue[middleLeftBackup] * 1.0888));
 		}
 		else
 		{
@@ -167,40 +167,34 @@ void batteryCheck()
 {
 	if(nImmediateBatteryLevel/1000.0 < MAINBATTERYTHRESHOLD)
 	{
+		bLCDBacklight = true;
 		parameter = "Main Battery Low";
 		lcdPrint(0);
+		bLCDBacklight = false;
 		for(int i;i<4;i++)
 		{
 			clearLCDLine(0);
+			bLCDBacklight = true;
 			displayLCDCenteredString(0, "Main Battery Low");
-			wait1Msec(250);
-			clearLCDLine(0);
-			wait1Msec(500);
-		}
-	}
-	powerExpanderLevel = (int)((float)SensorValue[powerExpander] * 5.46);
-	if(powerExpanderLevel < SECONDBATTERYTHRESHOLD)
-	{
-		parameter = "2nd Battery Low";
-		lcdPrint(0);
-		for(int i;i<4;i++)
-		{
-			clearLCDLine(0);
-			displayLCDCenteredString(0, "2nd Battery Low");
-			wait1Msec(250);
+			wait1Msec(1000);
+			bLCDBacklight = false;
 			clearLCDLine(0);
 			wait1Msec(500);
 		}
 	}
 	if(BackupBatteryLevel/1000.0 < BACKUPBATTERYTHRESHOLD)
 	{
+		bLCDBacklight = true;
 		parameter = "Back Battery Low";
 		lcdPrint(0);
+		bLCDBacklight = false;
 		for(int i;i<2;i++)
 		{
 			clearLCDLine(0);
+			bLCDBacklight = true;
 			displayLCDCenteredString(0, "Back Battery Low");
-			wait1Msec(250);
+			wait1Msec(1000);
+			bLCDBacklight = false;
 			clearLCDLine(0);
 			wait1Msec(500);
 		}

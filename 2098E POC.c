@@ -1,6 +1,5 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    powerExpander,  sensorAnalog)
-#pragma config(Sensor, in2,    autonSelector,  sensorPotentiometer)
 #pragma config(Sensor, in4,    lineFarRight,   sensorLineFollower)
 #pragma config(Sensor, in5,    lineFarLeft,    sensorLineFollower)
 #pragma config(Sensor, in6,    lineRight,      sensorLineFollower)
@@ -10,9 +9,9 @@
 #pragma config(Sensor, dgtl3,  liftDown,       sensorTouch)
 #pragma config(Sensor, dgtl5,  middleRightBackup, sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  middleLeftBackup, sensorQuadEncoder)
-#pragma config(Sensor, dgtl9,  isautonSelectFailure, sensorTouch)
-#pragma config(Sensor, dgtl10, isredAlliance,  sensorTouch)
-#pragma config(Sensor, dgtl11, ishangingZone,  sensorTouch)
+#pragma config(Sensor, dgtl9,  isRedAlliance,  sensorTouch)
+#pragma config(Sensor, dgtl10, isHangingZone,  sensorTouch)
+#pragma config(Sensor, dgtl11, isAutonTwo,     sensorTouch)
 #pragma config(Sensor, dgtl12, isIMEFailure,   sensorTouch)
 #pragma config(Sensor, I2C_1,  frontRightIME,  sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_2,  backRightIME,   sensorQuadEncoderOnI2CPort,    , AutoAssign)
@@ -55,16 +54,16 @@ void pre_auton()
 	{
 		writeDebugStreamLine("INFO: IME Failure, Switching to QE");
 	}
-	if(SensorBoolean[isautonSelectFailure])
-	{
-		writeDebugStreamLine("INFO: Auton Select Failure, Switching to Backup");
-	}
 	if(bResetFromWatchdogTimeout)
 	{
 		writeDebugStreamLine("ERROR: Watchdogtimeout Caused Restart");
 	}
-	if(bIfiRobotDisabled && !bResetFromWatchdogTimeout)
+	clearLCD();
+	bLCDBacklight = true;
+	displayLCDCenteredString(0, "Auton Select?");
+	if((!(nVexRCReceiveState & vrCompetitionSwitch) || bIfiRobotDisabled  || nLCDButtons == leftButton || nLCDButtons == centerButton || nLCDButtons == rightButton) && (!bResetFromWatchdogTimeout  || nLCDButtons == leftButton || nLCDButtons == centerButton || nLCDButtons == rightButton))
 	{
+		waitRelease();
 		writeDebugStreamLine("INFO: Starting Battery Check");
 		batteryCheck();
 		writeDebugStreamLine("INFO: Battery Check Done");
@@ -75,24 +74,21 @@ void pre_auton()
 	resetEveryThing();
 	liftValues();
 	bStopTasksBetweenModes = true;
+	bLCDBacklight = false;
 	writeDebugStreamLine("INFO: Pre_Auton Done");
 }
 
 task autonomous()
 {
 	writeDebugStreamLine("INFO: Autonomous Started");
-	lift.requestedLocation = 0;
-	lift.isPIDon = true;
 	StartTask(liftArmPID);
 	baseEncoderReset();
-	middleZoneStash(false);
+	auton(autonNumber);
 	writeDebugStreamLine("INFO: Autonomous Done");
 }
 
 task usercontrol()
 {
-	lift.requestedLocation = 0;
-	lift.isPIDon = true;
 	StartTask(liftArmPID);
 	StartTask(liftControl);
 	writeDebugStreamLine("INFO: Driver_Control Started");

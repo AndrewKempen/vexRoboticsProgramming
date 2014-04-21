@@ -9,64 +9,86 @@
 +--------+---------------------+--------------------+--------------------+
 | 1      | Red Hanging Zone    | Hang               | Push Big Balls Off |
 +--------+---------------------+--------------------+--------------------+
-| 2      | Red Middle Zone     | Big Ball Move      |                    |
+| 2      | Red Middle Zone     | Big Ball Move      | Stash              |
 +--------+---------------------+--------------------+--------------------+
 | 3      | Blue Hanging Zone   |                    |                    |
 +--------+---------------------+--------------------+--------------------+
 | 4      | Blue Middle Zone    |                    |                    |
 +--------+---------------------+--------------------+--------------------+
-| 5      | Programing Skills   | Retreat From Right | Retreat From Left  |
-+--------+---------------------+--------------------+--------------------+
 */
 
 void hangingZoneHang(bool red)
 {
-	startIntake(127); //Intake start at 127
-	lineFollow(720); //Line follow
+	startIntake(-127);
+	wait(0.75);
+	startIntake(127);
+	lineFollow(720);
 	wait(1.5);
-	stopIntake(); //Stop intake
+	stopIntake();
 	lineFollowBack(100);
-	lift.requestedLocation = lift.maxHeight;
+	lift.requestedLocation = lift.maxHeight + 100;
 	lift.isPIDon = true;
 	wait(1);
-	rightEncoder(0); //Reset right encoders
-	while(rightEncoder()<230) //Turn
+	if(red)
 	{
-		startBaseTurn(63, -63);
+		rightEncoder(0);
+		while(rightEncoder()<230)
+		{
+			startBaseTurn(63, -63);
+		}
 	}
-	stopBase(); //Stop base
+	else
+	{
+		leftEncoder(0);
+		while(leftEncoder()<230)
+		{
+			startBaseTurn(-63, 63);
+		}
+	}
+	stopBase();
 	wait(5);
 	ClearTimer(T4);
 	rightEncoder(0);
-	while(rightEncoder() < 860 && time1[T4] < 3500) //Forward with timeout
+	while(rightEncoder() < 860 && time1[T4] < 3500)
 	{
 		startBase(-127);
 	}
-	stopBase(); //Stop Base
+	stopBase();
 	lift.requestedLocation = 400;
 }
 void hangingZoneMoveBigBall(bool red)
 {
-		startIntake(127); //Start intake at 127
-		lineFollow(false, 890); //Follow line
-		lift.requestedLocation = 250;
-		lift.isPIDon = true;
-		baseEncoderReset(); //Clear all encoders on base
-		stopIntake(); //Stop the intake
-		while(rightEncoder()<390) //Turn
+	startIntake(127);
+	lineFollow(890);
+	wait(1.5);
+	lift.requestedLocation = 250;
+	lift.isPIDon = true;
+	baseEncoderReset();
+	stopIntake();
+	if(red)
+	{
+		while(rightEncoder()<390)
 		{
 			startBaseTurn(63, -63);
 		}
-		startIntake(50); //Start intake at 50 to keep the buckyballs in
-		moveBase(1400, true, 100); //Move forward
-		stopIntake(); //Stop intake
-		wait1Msec(500); //Pause to let the big ball settle
-		baseEncoderReset(); //Reset the base's encoders
-		lift.requestedLocation = 900;
-		moveBase(320, true, 63); //Advance to the barrier
-		stopBase(); //Stop the base
-		startIntake(-127); //Outake big ball into other big ball
-		wait10Msec(100); //Pause to outake the bigball
+	}
+	else
+	{
+		while(leftEncoder()<390)
+		{
+			startBaseTurn(-63, 63);
+		}
+	}
+	moveBase(1400, true, 127);
+	stopIntake();
+	wait(0.5);
+	baseEncoderReset();
+	lift.requestedLocation = 900;
+	wait(2);
+	moveBase(320, true, 63);
+	stopBase();
+	startIntake(-127);
+	wait10Msec(100);
 }
 void middleZonePushBigBalls(bool red)
 {
@@ -85,10 +107,21 @@ void middleZonePushBigBalls(bool red)
 	}
 	stopBase();
 	wait(1);
-	leftEncoder(0);
-	while(leftEncoder() < 950)
+	if(!red)
 	{
-		startLeft(127);
+		leftEncoder(0);
+		while(leftEncoder() < 950)
+		{
+			startLeft(127);
+		}
+	}
+	else
+	{
+		rightEncoder(0);
+		while(rightEncoder() < 950)
+		{
+			startRight(127);
+		}
 	}
 	stopBase();
 	rightEncoder(0);
@@ -105,10 +138,21 @@ void middleZoneStash(bool red)
 	lift.isPIDon = true;
 	lift.requestedLocation = lift.stashHeight + 100;
 	wait(1);
-	rightEncoder(0);
-	while(rightEncoder() < 743)
+	if(!red)
 	{
-		startRight(63);
+		rightEncoder(0);
+		while(rightEncoder() < 743)
+		{
+			startRight(63);
+		}
+	}
+	else
+	{
+		leftEncoder(0);
+		while(leftEncoder() < 743)
+		{
+			startLeft(63);
+		}
 	}
 	stopBase();
 	rightEncoder(0);
@@ -140,10 +184,6 @@ void middleZoneStash(bool red)
 	lift.requestedLocation = lift.stashHeight - 100;
 	wait(2);
 	startIntake(-35);
-}
-void middleZoneGetBigBall(bool red)
-{
-
 }
 void hangingZoneStash(bool red)
 {
@@ -210,48 +250,36 @@ void hangingZoneStash(bool red)
 }
 void auton(int autonomusCode)
 {
-	bool red;
-	int zone = (autonomusCode/10);
-	if(zone == 1 || zone == 2)
+	if(autonomusCode == 11) //Red Hang
 	{
-		red = true;
+		hangingZoneHang(true);
 	}
-	else
+	else if(autonomusCode == 31) //Blue Hang
 	{
-		red = false;
+		hangingZoneHang(false);
 	}
-	if(zone == 1 || zone == 3)
+	else if(autonomusCode == 12) //Red Move Big Balls
 	{
-		switch(autonomusCode - (zone*10))
-		{
-		case hangAuton:
-			hangingZoneHang(red);
-			return;
-		case moveBigBallAuton:
-			hangingZoneMoveBigBall(red);
-			return;
-		default:
-			writeDebugStreamLine("ERROR: Unexpected auton number at \"auton\"");
-			return;
-		}
+		hangingZoneMoveBigBall(true);
 	}
-	else if(zone == 2 || zone == 4)
+	else if(autonomusCode == 32) //Blue Move Big Balls
 	{
-		switch(autonomusCode - (zone*10))
-		{
-		case stashAuton:
-			middleZonePushBigBalls(red);
-			return;
-		case getBigBallAuton:
-			middleZoneStash(red);
-			return;
-		default:
-			writeDebugStreamLine("ERROR: Unexpected auton number at \"auton\"");
-			return;
-		}
+		hangingZoneMoveBigBall(false);
 	}
-	else
+	else if(autonomusCode == 21) //Red Push Big Balls
 	{
-		writeDebugStreamLine("ERROR: Unexpected zone number at \"auton\"");
+		middleZonePushBigBalls(true);
+	}
+	else if(autonomusCode == 41) //Blue Push Big Balls
+	{
+		middleZonePushBigBalls(false);
+	}
+	else if(autonomusCode == 22) //Red Push Big Balls
+	{
+		middleZoneStash(true);
+	}
+	else if(autonomusCode == 42) //Blue Push Big Balls
+	{
+		middleZoneStash(false);
 	}
 }
