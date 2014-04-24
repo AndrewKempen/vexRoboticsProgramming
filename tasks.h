@@ -108,6 +108,14 @@ task liftControl()
 			lift.isManualPos = true;
 			lift.requestedLocation = 0;
 		}
+		if(vexRT[Btn5UXmtr2] == 1)
+		{
+			if(abs(vexRT[Ch3Xmtr2]) > 15)
+			{
+				lift.isPIDon = false;
+				liftSpeed = vexRT[Ch3Xmtr2];
+			}
+		}
 		else if(!lift.isPIDon && !lift.isManualPos)
 		{
 			wait10Msec(5);

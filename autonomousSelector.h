@@ -26,7 +26,7 @@ int autonomousSelector()
 	string mainBattery, backupBattery;
 	ClearTimer(T1);
 	ClearTimer(T2);
-	while(autonCode == 0 && time1[T1] < 15000) //15 Second Timeout
+	while(autonCode == 0 && time1[T1] < 15000 && vexRT[Btn7U] != 1 && vexRT[Btn7UXmtr2] != 1) //15 Second Timeout
 	{
 		bLCDBacklight = true;									// Turn on LCD Backlight
 		screen = lcdScreen(screen, 2);

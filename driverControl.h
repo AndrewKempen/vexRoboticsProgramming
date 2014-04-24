@@ -6,13 +6,20 @@ void driverControl(bool infiniteLoop = true)
 	bool intakeBtnReleased = false;
 	do
 	{
-		if(abs(liftEncoder()) > lift.tipHeight)
+		if(abs(liftEncoder()) > lift.tipHeight && (vexRT[Btn7U] != 1 || vexRT[Btn7UXmtr2] != 1))
 		{
 			MOD = 3;
 		}
 		else
 		{
-			MOD = 1;
+			if(vexRT[Btn7U] == 1 || vexRT[Btn7UXmtr2] == 1)
+			{
+				MOD = 2;
+			}
+			else
+			{
+				MOD = 1;
+			}
 		}
 		if(abs(vexRT[Ch3]) > THRESHOLDD)
 		{
@@ -40,42 +47,54 @@ void driverControl(bool infiniteLoop = true)
 		}
 		if(vexRT[Btn6U] == 1 && !intakeBtnReleased && !intakeOn && time1[T3] > 1000)
 		{
-			startIntake(maxSpeed);
+			intakeSpeed = 127;
 			intakeOn=true;
 		}
 		if(vexRT[Btn6U] == 1 && intakeBtnReleased)
 		{
 			intakeOn = false;
 			intakeBtnReleased = false;
-			stopIntake();
+			intakeSpeed = 0;
 			ClearTimer(T3);
 		}
 		if(false && intakeBtnReleased)
 		{
 			intakeOn = false;
 			intakeBtnReleased = false;
-			stopIntake();
+			intakeSpeed = 0;
 			ClearTimer(T1);
 			ClearTimer(T3);
 		}
 		if(time1[T1] < 500 && time1[T1] != 0)
 		{
-			startIntake(maxSpeed);
+			intakeSpeed = 127;
 		}
 		if(time1[T1] > 500 && !intakeOn && vexRT[Btn6D] != 1)
 		{
-			stopIntake();
+			intakeSpeed = 0;
 		}
 		else if(vexRT[Btn6D] == 1)
 		{
-			startIntake(minSpeed/MOD);
+			intakeSpeed = (-127/MOD);
 			intakeOn = false;
 			intakeBtnReleased = false;
 		}
 		else if(!intakeOn)
 		{
-			stopIntake();
+			intakeSpeed = 0;
 		}
+		if(vexRT[Btn5UXmtr2] == 1)
+		{
+			if(abs(vexRT[Ch2Xmtr2]) > THRESHOLDD)
+			{
+				intakeSpeed = vexRT[Ch2Xmtr2];
+			}
+			else
+			{
+				intakeSpeed = 0;
+			}
+		}
+		startIntake(intakeSpeed);
 	}
 	while(infiniteLoop);
 }

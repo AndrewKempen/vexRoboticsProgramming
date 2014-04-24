@@ -13,6 +13,8 @@ string line0;
 int MOD = 1;
 bool intakeOn = false;
 bool intakeBtnReleased = false;
+int intakeSpeed = 0;
+int liftSpeed = 0;
 
 int liftBtnUpLastState;
 int liftBtnDownLastState;
