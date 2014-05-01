@@ -35,7 +35,7 @@ const int hangingZoneStashAuton = 3;
 const int	moveBigBallAuton = 4;
 const int getBigBallAuton = 5;
 
-struct{
+struct lift{
 	bool isDown;
 	int maxHeight;
 	int stashHeight;
