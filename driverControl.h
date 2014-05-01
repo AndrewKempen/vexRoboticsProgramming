@@ -12,19 +12,12 @@ void driverControl(bool infiniteLoop = true)
 		}
 		else
 		{
-			if(vexRT[Btn7U] == 1 || vexRT[Btn7UXmtr2] == 1)
-			{
-				MOD = 2;
-			}
-			else
-			{
-				MOD = 1;
-			}
+			MOD = 1;
 		}
 		if(abs(vexRT[Ch3]) > THRESHOLDD)
 		{
-			motor[backLeft]  = (vexRT[Ch3]/MOD);
-			motor[frontLeft] = (vexRT[Ch3]/MOD);
+			motor[backLeft]  = (vexRT[Ch3]);
+			motor[frontLeft] = (vexRT[Ch3]);
 		}
 		else
 		{
@@ -33,8 +26,8 @@ void driverControl(bool infiniteLoop = true)
 		}
 		if(abs(vexRT[Ch2]) > THRESHOLDD)
 		{
-			motor[backRight] = (vexRT[Ch2])/MOD;
-			motor[frontRight] = (vexRT[Ch2])/MOD;
+			motor[backRight] = (vexRT[Ch2]);
+			motor[frontRight] = (vexRT[Ch2]);
 		}
 		else
 		{
