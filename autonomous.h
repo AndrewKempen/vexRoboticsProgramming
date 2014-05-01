@@ -20,14 +20,14 @@
 void hangingZoneHang(bool red)
 {
 	startIntake(-127);
-	wait(0.75);
+	wait(1);
 	startIntake(127);
-	lineFollow(720);
-	wait(1.5);
-	stopIntake();
-	lineFollowBack(100);
+	wait(0.5);
 	lift.requestedLocation = lift.maxHeight + 100;
 	lift.isPIDon = true;
+	lineFollow(720);
+	stopIntake();
+	lineFollowBack(100);
 	wait(1);
 	if(red)
 	{
@@ -46,10 +46,9 @@ void hangingZoneHang(bool red)
 		}
 	}
 	stopBase();
-	wait(5);
 	ClearTimer(T4);
 	rightEncoder(0);
-	while(rightEncoder() < 860 && time1[T4] < 3500)
+	while(rightEncoder() < 860 && time1[T4] < 6000)
 	{
 		startBase(-127);
 	}
@@ -58,6 +57,8 @@ void hangingZoneHang(bool red)
 }
 void hangingZoneMoveBigBall(bool red)
 {
+	startIntake(-127);
+	wait(0.5);
 	startIntake(127);
 	lineFollow(890);
 	wait(1.5);
@@ -92,11 +93,12 @@ void hangingZoneMoveBigBall(bool red)
 }
 void middleZonePushBigBalls(bool red)
 {
+	startIntake(-127);
+	wait(0.5);
 	lift.isPIDon = true;
 	lift.requestedLocation = 900;
 	wait(3.5);
 	lineFollow(850);
-	startIntake(-63);
 	wait(1.3);
 	lineFollowBack(850);
 	wait(4);
@@ -133,6 +135,9 @@ void middleZonePushBigBalls(bool red)
 }
 void middleZoneStash(bool red)
 {
+	startIntake(-127);
+	wait(0.5);
+	stopIntake();
 	lineFollow(2200);
 	startIntake(23);
 	lift.isPIDon = true;
